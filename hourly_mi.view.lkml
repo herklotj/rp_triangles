@@ -13,6 +13,7 @@ view: hourly_mi {
           c.originator_name,
           c.rct_noquote_an,
           c.rct_modelnumber,
+          c.rct_grantednoclaimsdiscount,
           s.sale_timestamp,
           m.rct_mi_13 as scheme_number,
           case when max(cast(substr(c.rct_modelnumber,23,3),int)) over() = cast(substr(c.rct_modelnumber,23,3),int) then 1 else 0 end as is_most_recent_model
@@ -21,7 +22,7 @@ view: hourly_mi {
           on c.quote_id = s.insurer_quote_ref
         LEFT JOIN qs_mi_outputs m
           on c.quote_id = m.quote_id
-        WHERE c.quote_dttm < sysdate and months_between(to_date(sysdate),c.quote_dttm) <= 6
+        WHERE c.quote_dttm < sysdate and months_between(to_date(sysdate),c.quote_dttm) <= 3
           and c.motor_transaction_type = 'NewBusiness' and c.business_purpose = ''
      ;;
  }
@@ -126,6 +127,14 @@ view: hourly_mi {
     label: "Model Number"
     type: string
     sql: ${TABLE}.rct_modelnumber ;;
+  }
+
+  dimension: rct_grantednoclaimsdiscount {
+    label: "NCD"
+    type: tier
+    tiers: [5,9]
+    style: integer
+    sql: ${TABLE}.rct_grantednoclaimsdiscount ;;
   }
 
   dimension: scheme_number {
