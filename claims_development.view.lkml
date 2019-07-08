@@ -2,7 +2,7 @@ view: claims_development {
   derived_table: {
     sql:
 select
-    polnum
+    a.polnum
     ,scheme
     ,renewseq
     ,inception
@@ -69,6 +69,7 @@ select
     ,case when total_incurred > 50000 then 50000 else total_incurred end as total_incurred_cap_50k
     ,case when total_incurred > 1000000 then 1000000 else total_incurred end as total_incurred_cap_1m
     ,case when settleddate <= dev_month  and total_reported_count > 0 then 1.00 else 0 end as settled_indicator
+    ,inception_strategy
 from
   (
 
@@ -119,7 +120,10 @@ from
       where prem.acc_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   )a
-
+  left join
+      (select polnum, bustrnno, inception_strategy from expoclm
+      ) exp
+    on a.polnum = exp.polnum and exp.bustrnno = 1
 where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
 
@@ -137,6 +141,10 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql: ${TABLE}.renewseq ;;
   }
 
+  dimension: strategy {
+    type: string
+    sql: ${TABLE}.inception_strategy ;;
+  }
 
   dimension_group: accident_month {
     type: time
@@ -368,7 +376,7 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: pi_freq {
     type: number
     sql: sum(pi_count)/ ${exposure_cumulative} ;;
-    value_format: "0.0%"
+    value_format: "0.00%"
   }
 
   measure: ot_freq {
