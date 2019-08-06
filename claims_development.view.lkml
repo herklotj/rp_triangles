@@ -66,6 +66,7 @@ select
     ,large_pi_incurred AS large_pi_incurred
     ,large_pi_paid
     ,total_incurred - large_pi_incurred AS total_cap_incurred
+    ,case when total_incurred > 25000 then 25000 else total_incurred end as total_incurred_cap_25k
     ,case when total_incurred > 50000 then 50000 else total_incurred end as total_incurred_cap_50k
     ,case when total_incurred > 1000000 then 1000000 else total_incurred end as total_incurred_cap_1m
     ,case when settleddate <= dev_month  and total_reported_count > 0 then 1.00 else 0 end as settled_indicator
@@ -225,6 +226,12 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     description: "Total Incurred Claims"
   }
 
+  measure: total_incurred_cap_25k {
+    type: sum
+    sql: total_incurred_cap_25k ;;
+    description: "Total Incurred Claims Cap 25k"
+  }
+
   measure: total_incurred_cap_50k {
     type: sum
     sql: total_incurred_cap_50k ;;
@@ -266,6 +273,13 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     type: number
     sql: ${total_incurred} / ${earned_premium_cumulative};;
     description: "Loss Ratio"
+    value_format: "0%"
+  }
+
+  measure: loss_ratio_cap_25k {
+    type: number
+    sql: ${total_incurred_cap_25k} / ${earned_premium_cumulative};;
+    description: "Loss Ratio Cap 25k"
     value_format: "0%"
   }
 
@@ -553,39 +567,10 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   }
 
-  measure: AD_Link {
-    type: string
-    link: {
-      label: "desired label name"
-      url: "https://actianpreprod01:9999/dashboards/13"
-      icon_url : "url_of_an_image_file"
-    }
-    sql: min('AD Dashboard');;
+  measure: tp_ad_count_ratio {
+    type: number
+    sql: sum(tp_count)/nullif(sum(ad_count),0);;
 
   }
-
-  measure: TP_Link {
-    type: string
-    link: {
-      label: "desired label name"
-      url: "https://actianpreprod01:9999/dashboards/14"
-      icon_url : "url_of_an_image_file"
-    }
-    sql: min('TPD Dashboard');;
-
-  }
-
-  measure: PI_Link {
-    type: string
-    link: {
-      label: "desired label name"
-      url: "https://actianpreprod01:9999/dashboards/15"
-      icon_url : "url_of_an_image_file"
-    }
-    sql: min('PI Dashboard');;
-
-  }
-
-
 
   }
