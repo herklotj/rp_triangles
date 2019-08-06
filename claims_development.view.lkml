@@ -278,21 +278,21 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: loss_ratio_cap_25k {
     type: number
-    sql: ${total_incurred_cap_25k} / ${earned_premium_cumulative};;
+    sql: ${total_incurred_cap_25k} / nullif(${earned_premium_cumulative},0);;
     description: "Loss Ratio Cap 25k"
     value_format: "0%"
   }
 
   measure: loss_ratio_cap_50k {
     type: number
-    sql: ${total_incurred_cap_50k} / ${earned_premium_cumulative};;
+    sql: ${total_incurred_cap_50k} / nullif(${earned_premium_cumulative},0);;
     description: "Loss Ratio Cap 50k"
     value_format: "0%"
   }
 
   measure: loss_ratio_cap_1m {
     type: number
-    sql: ${total_incurred_cap_1m} / ${earned_premium_cumulative};;
+    sql: ${total_incurred_cap_1m} /nullif(${earned_premium_cumulative},0);;
     description: "Loss Ratio Cap 1m"
     value_format: "0%"
   }
