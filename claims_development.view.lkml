@@ -435,9 +435,21 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   }
 
+  measure: tp_chire_sev {
+    type: number
+    sql: case when sum(tp_chire_count) = 0 then 0 else sum(tp_chire_incurred)/ sum(tp_chire_count) end ;;
+
+  }
+
   measure: tp_settled_sev {
     type: number
     sql: sum(case when settled_indicator =1 then tp_incurred else 0 end) / sum(case when settled_indicator =1 then tp_count else 0.0000000000000001 end) ;;
+
+  }
+
+  measure: tp_chire_settled_sev {
+    type: number
+    sql: sum(case when settled_indicator =1 then tp_chire_incurred else 0 end) / sum(case when settled_indicator =1 then tp_chire_count else 0.0000000000000001 end) ;;
 
   }
 
