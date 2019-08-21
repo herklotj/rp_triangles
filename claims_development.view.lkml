@@ -511,6 +511,12 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   }
 
+  measure: ad_recoveries_vs_total_ad {
+    type: number
+    sql: sum(-ad_incurred_recoveries) / sum(ad_incurred - ad_incurred_recoveries) ;;
+
+  }
+
   measure: total_incurred_recoveries {
     type: sum
     sql: total_incurred_recoveries;;
