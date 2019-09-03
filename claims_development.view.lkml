@@ -591,4 +591,76 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   }
 
+
+  measure: ad_incurred {
+      type: number
+      sql:  sum(ad_incurred) ;;
+  }
+
+  measure: tp_incurred {
+    type: number
+    sql:  sum(tp_incurred) ;;
+  }
+
+  measure: pi_incurred {
+    type: number
+    sql:  sum(pi_incurred+large_pi_incurred) ;;
+  }
+
+  measure: pi_incurred_cap1m {
+    type: number
+    sql:  sum(case when (pi_incurred+large_pi_incurred) > 1000000 then 1000000 else (pi_incurred+large_pi_incurred) end) ;;
+  }
+
+  measure: pi_incurred_cap25k {
+    type: number
+    sql:  sum(case when (pi_incurred+large_pi_incurred) > 25000 then 25000 else (pi_incurred+large_pi_incurred) end) ;;
+  }
+
+  measure: ot_incurred {
+    type: number
+    sql:  sum(ot_incurred) ;;
+  }
+
+  measure: ws_incurred {
+    type: number
+    sql:  sum(ws_incurred) ;;
+  }
+
+  measure: ad_paid {
+    type: number
+    sql:  sum(ad_paid) ;;
+  }
+
+  measure: tp_paid {
+    type: number
+    sql:  sum(tp_paid) ;;
+  }
+
+  measure: pi_paid {
+    type: number
+    sql:  sum(pi_paid+large_pi_paid) ;;
+  }
+
+  measure: pi_paid_cap1m {
+    type: number
+    sql:  sum(case when (pi_paid+large_pi_paid) > 1000000 then 1000000 else (pi_paid+large_pi_paid) end) ;;
+  }
+
+  measure: pi_paid_cap25k {
+    type: number
+    sql:  sum(case when (pi_paid+large_pi_paid) > 25000 then 25000 else (pi_paid+large_pi_paid) end) ;;
+  }
+
+  measure: ot_paid {
+    type: number
+    sql:  sum(ot_paid) ;;
+  }
+
+  measure: ws_paid {
+    type: number
+    sql:  sum(ws_paid) ;;
+  }
+
+
   }
