@@ -23,7 +23,7 @@ select
     ,case when dev_period > 0 then dev_month else acc_month end as dev_month
     ,months_between(dev_month,acc_year) AS dev_period_acc_year
     ,months_between(dev_month,acc_qtr) AS dev_period_acc_qtr
-    ,months_between(dev_month,uw_year) AS dev_period_uw_year
+    ,months_between(dev_month+day(uw_year)-1,uw_year) AS dev_period_uw_year
     ,months_between(dev_month,uw_qtr) AS dev_period_uw_qtr
     ,total_reported_count_exc_ws AS total_reported_count_exc_ws
     ,total_reported_count AS total_reported_count
