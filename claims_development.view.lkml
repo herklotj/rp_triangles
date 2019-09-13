@@ -414,8 +414,18 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: settled_indicator {
     type: sum
     sql: settled_indicator;;
-
+    value_format: "0.0%"
   }
+
+
+  measure: tp_with_Chire {
+    type: number
+    sql: sum(TP_Chire_Count)/nullif(sum(tp_count),0) ;;
+    value_format: "0.0%"
+  }
+
+
+
 
   measure: ad_sev {
     type: number
