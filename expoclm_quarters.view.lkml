@@ -1,99 +1,123 @@
 view: expoclm_quarters {
   derived_table: {
     sql:
-    select
-  a.polnum,
-  a.scheme_number,
-  a.evy,
-  a.exposure_asat,
-  a.exposure_start,
-  a.exposure_end,
-  a.net_premium,
-  a.eprem,
-  a.policy_type,
-  a.ncdp,
-  a.quote_id,
-  a.tp_paid,
-  a.tp_incurred,
-  a.tp_incurred_cap_50k,
-  a.tp_count,
-  a.ad_paid,
-  a.ad_incurred,
-  a.ad_incurred_cap_50k,
-  a.ad_count,
-  a.pi_paid,
-  a.pi_incurred,
-  a.pi_incurred_cap_50k,
-  a.pi_count,
-  a.ws_paid,
-  a.ws_incurred,
-  a.ws_incurred_cap_50k,
-  a.ws_count,
-  a.ot_paid,
-  a.ot_incurred,
-  a.ot_incurred_cap_50k,
-  a.ot_count,
-  a.total_paid,
-  a.total_incurred,
-  a.total_incurred_cap_50k,
-  a.total_count,
-  a.total_count_exc_ws,
-  CASE WHEN p.dev_quarter IS NOT NULL THEN a.tp_count*p.tp_frequency
-        ELSE a.tp_count END AS projected_tp_count,
-  CASE WHEN p.dev_quarter IS NOT NULL THEN a.ad_count*p.ad_frequency
-        ELSE a.ad_count END AS projected_ad_count,
-  CASE WHEN p.dev_quarter IS NOT NULL THEN a.pi_count*p.pi_frequency
-        ELSE a.pi_count END AS projected_pi_count,
-  CASE WHEN p.dev_quarter IS NOT NULL THEN a.ot_count*1
-        ELSE a.ot_count END AS projected_ot_count,
-  CASE WHEN p.dev_quarter IS NOT NULL THEN a.ws_count*1
-        ELSE a.ws_count END AS projected_ws_count,
+      select
+    a.polnum,
+    a.scheme_number,
+    a.evy,
+    a.exposure_asat,
+    a.exposure_start,
+    a.exposure_end,
+    a.net_premium,
+    a.eprem,
+    a.policy_type,
+    a.ncdp,
+    a.quote_id,
+    a.tp_paid,
+    a.tp_incurred,
+    a.tp_incurred_cap_50k,
+    a.tp_count,
+    a.ad_paid,
+    a.ad_incurred,
+    a.ad_incurred_cap_50k,
+    a.ad_count,
+    a.pi_paid,
+    a.pi_incurred,
+    a.pi_incurred_cap_50k,
+    a.pi_count,
+    a.ws_paid,
+    a.ws_incurred,
+    a.ws_incurred_cap_50k,
+    a.ws_count,
+    a.ot_paid,
+    a.ot_incurred,
+    a.ot_incurred_cap_50k,
+    a.ot_count,
+    a.total_paid,
+    a.total_incurred,
+    a.total_incurred_cap_50k,
+    a.total_count,
+    a.total_count_exc_ws,
+    CASE WHEN p.dev_quarter IS NOT NULL THEN a.tp_count*p.tp_frequency
+          ELSE a.tp_count END AS projected_tp_count,
+    CASE WHEN p.dev_quarter IS NOT NULL THEN a.ad_count*p.ad_frequency
+          ELSE a.ad_count END AS projected_ad_count,
+    CASE WHEN p.dev_quarter IS NOT NULL THEN a.pi_count*p.pi_frequency
+          ELSE a.pi_count END AS projected_pi_count,
+    CASE WHEN p.dev_quarter IS NOT NULL THEN a.ot_count*1
+          ELSE a.ot_count END AS projected_ot_count,
+    CASE WHEN p.dev_quarter IS NOT NULL THEN a.ws_count*1
+          ELSE a.ws_count END AS projected_ws_count,
 
-  CASE WHEN p.dev_quarter IS NOT NULL THEN a.tp_incurred*p.tp_frequency
-        ELSE a.tp_incurred END AS projected_tp_incurred,
+    CASE WHEN p.dev_quarter IS NOT NULL THEN a.tp_incurred*p.tp_frequency
+          ELSE a.tp_incurred END AS projected_tp_incurred,
 
-CASE WHEN p.dev_quarter IS NOT NULL THEN a.ad_incurred*p.ad_frequency
-        ELSE a.ad_incurred END AS projected_ad_incurred,
+  CASE WHEN p.dev_quarter IS NOT NULL THEN a.ad_incurred*p.ad_frequency
+          ELSE a.ad_incurred END AS projected_ad_incurred,
 
-CASE WHEN p.dev_quarter IS NOT NULL THEN a.pi_incurred_cap_50k*p.pi_frequency
-        ELSE a.pi_incurred_cap_50k END AS projected_pi_incurred_cap_50k,
+  CASE WHEN p.dev_quarter IS NOT NULL THEN a.pi_incurred_cap_50k*p.pi_frequency
+          ELSE a.pi_incurred_cap_50k END AS projected_pi_incurred_cap_50k,
 
 
-  (case when a.ncdp = 'N' then b.predicted_ad_freq_an else b.predicted_ad_freq_ap end)*evy*aug18sc.AD_F as predicted_ad_freq_aug18,
-  (case when a.ncdp = 'N' then b.predicted_ad_sev_an else b.predicted_ad_sev_ap end)*evy*aug18sc.AD_S as predicted_ad_sev_aug18,
-  (case when a.ncdp = 'N' then b.predicted_pi_freq_an else b.predicted_pi_freq_ap end)*evy*aug18sc.PI_F as predicted_pi_freq_aug18,
-  (case when a.ncdp = 'N' then b.predicted_pi_sev_an else b.predicted_pi_sev_ap end)*evy*aug18sc.PI_S as predicted_pi_sev_aug18,
-  (case when a.ncdp = 'N' then b.predicted_tpd_freq_an else b.predicted_tpd_freq_ap end)*evy*aug18sc.TP_F as predicted_tp_freq_aug18,
-  (case when a.ncdp = 'N' then b.predicted_tpd_sev_an else b.predicted_tpd_sev_ap end)*evy*aug18sc.TP_S as predicted_tp_sev_aug18,
-  (case when a.ncdp = 'N' then b.predicted_ot_freq_an else b.predicted_ot_freq_ap end)*evy*aug18sc.OT_F as predicted_ot_freq_aug18,
-  (case when a.ncdp = 'N' then b.predicted_ot_sev_an else b.predicted_ot_sev_ap end)*evy*aug18sc.OT_S as predicted_ot_sev_aug18,
-  (case when a.ncdp = 'N' then b.predicted_ws_freq_an else b.predicted_ws_freq_ap end)*evy*aug18sc.WS_F as predicted_ws_freq_aug18,
-  (case when a.ncdp = 'N' then b.predicted_ws_sev_an else b.predicted_ws_sev_ap end)*evy*aug18sc.WS_S as predicted_ws_sev_aug18,
-  b.dup as match_flag,
-  date_trunc('quarter',a.exposure_start) as quarter,
-  uwyr
-from
-          expoclm_quarters a
-left join
-          (select
-             *,
-             row_number() over(partition by quote_id) as dup
-           from uncalibrated_scores_aug18
-          ) b
-          on a.quote_id = b.quote_id and b.dup = 1
+    (case when a.ncdp = 'N' then b.predicted_ad_freq_an else b.predicted_ad_freq_ap end)*evy*aug18sc.AD_F as predicted_ad_freq_aug18,
+    (case when a.ncdp = 'N' then b.predicted_ad_sev_an else b.predicted_ad_sev_ap end)*evy*aug18sc.AD_S as predicted_ad_sev_aug18,
+    (case when a.ncdp = 'N' then b.predicted_pi_freq_an else b.predicted_pi_freq_ap end)*evy*aug18sc.PI_F as predicted_pi_freq_aug18,
+    (case when a.ncdp = 'N' then b.predicted_pi_sev_an else b.predicted_pi_sev_ap end)*evy*aug18sc.PI_S as predicted_pi_sev_aug18,
+    (case when a.ncdp = 'N' then b.predicted_tpd_freq_an else b.predicted_tpd_freq_ap end)*evy*aug18sc.TP_F as predicted_tp_freq_aug18,
+    (case when a.ncdp = 'N' then b.predicted_tpd_sev_an else b.predicted_tpd_sev_ap end)*evy*aug18sc.TP_S as predicted_tp_sev_aug18,
+    (case when a.ncdp = 'N' then b.predicted_ot_freq_an else b.predicted_ot_freq_ap end)*evy*aug18sc.OT_F as predicted_ot_freq_aug18,
+    (case when a.ncdp = 'N' then b.predicted_ot_sev_an else b.predicted_ot_sev_ap end)*evy*aug18sc.OT_S as predicted_ot_sev_aug18,
+    (case when a.ncdp = 'N' then b.predicted_ws_freq_an else b.predicted_ws_freq_ap end)*evy*aug18sc.WS_F as predicted_ws_freq_aug18,
+    (case when a.ncdp = 'N' then b.predicted_ws_sev_an else b.predicted_ws_sev_ap end)*evy*aug18sc.WS_S as predicted_ws_sev_aug18,
+
+    case when ncdp = 'N' then jcred.predicted_ad_freq_an*jcredsc.AD_F else jcred.predicted_ad_freq_ap*jcredsc.AD_F end *evy    *1.05       as predicted_ad_freq_jul19cred,
+    case when ncdp = 'N' then jcred.predicted_ad_sev_an*jcredsc.AD_S else jcred.predicted_ad_sev_ap*jcredsc.AD_S end *evy      *1.16       as predicted_ad_sev_jul19cred,
+    case when ncdp = 'N' then jcred.predicted_pi_freq_an*jcredsc.PI_F else jcred.predicted_pi_freq_ap*jcredsc.PI_F end *evy    *0.99       as predicted_pi_freq_jul19cred,
+    case when ncdp = 'N' then jcred.predicted_pi_sev_an*jcredsc.PI_S else jcred.predicted_pi_sev_ap*jcredsc.PI_S end *evy      *0.92       as predicted_pi_sev_jul19cred,
+    case when ncdp = 'N' then jcred.predicted_tpd_freq_an*jcredsc.TP_F else jcred.predicted_tpd_freq_ap*jcredsc.TP_F end *evy  *0.92       as predicted_tp_freq_jul19cred,
+    case when ncdp = 'N' then jcred.predicted_tpd_sev_an*jcredsc.TP_S else jcred.predicted_tpd_sev_ap*jcredsc.TP_S end *evy    *1.23       as predicted_tp_sev_jul19cred,
+    case when ncdp = 'N' then jcred.predicted_ot_freq_an*jcredsc.OT_F else jcred.predicted_ot_freq_ap*jcredsc.OT_F end *evy    *0.90       as predicted_ot_freq_jul19cred,
+    case when ncdp = 'N' then jcred.predicted_ot_sev_an*jcredsc.OT_S else jcred.predicted_ot_sev_ap*jcredsc.OT_S end *evy      *2.02       as predicted_ot_sev_jul19cred,
+    case when ncdp = 'N' then jcred.predicted_ws_freq_an*jcredsc.WS_F else jcred.predicted_ws_freq_ap*jcredsc.WS_F end *evy    *0.895      as predicted_ws_freq_jul19cred,
+    case when ncdp = 'N' then jcred.predicted_ws_sev_an*jcredsc.WS_S else jcred.predicted_ws_sev_ap*jcredsc.WS_S end *evy      *1.22       as predicted_ws_sev_jul19cred,
+
+    case when b.dup = 1 and jcred.dup=1 then 1 else 0 end as match_flag,
+    date_trunc('quarter',a.exposure_start) as quarter,
+    uwyr
+  from
+            expoclm_quarters a
+  left join
+            (select
+               *,
+               row_number() over(partition by quote_id) as dup
+             from uncalibrated_scores_aug18
+            ) b
+            on a.quote_id = b.quote_id and b.dup = 1
 
   left join
-      motor_model_calibrations aug18sc
-      on aug18sc.policy_start_month = date_trunc('month',a.termincep) and aug18sc.model='August_18_pricing' and aug18sc.end = '9999-01-01'
+            (select
+               *,
+               row_number() over(partition by quote_id) as dup
+             from aapricing.uncalibrated_scores_jul19_cred
+            ) jcred
+            on a.quote_id = jcred.quote_id and jcred.dup = 1
 
-  LEFT JOIN
-        pattern_to_ultimate p
-        ON (months_between (trunc (SYSDATE,'quarter'),trunc (a.exposure_start,'quarter')) / 3)-1 = p.dev_quarter
+     left join
+        motor_model_calibrations aug18sc
+        on aug18sc.policy_start_month = date_trunc('month',a.termincep) and aug18sc.model='August_18_pricing' and aug18sc.end = '9999-01-01'
+
+    left join
+                motor_model_calibrations jcredsc
+                on jcredsc.policy_start_month = date_trunc('month',a.termincep) and jcredsc.model='July_19_Cred_Pric' and jcredsc.end = '9999-01-01'
+
+    LEFT JOIN
+          pattern_to_ultimate p
+          ON (months_between (trunc (SYSDATE,'quarter'),trunc (a.exposure_start,'quarter')) / 3)-1 = p.dev_quarter
 
 
-    where date_trunc('quarter',a.exposure_start) < date_trunc('quarter',to_date(sysdate))
-         ;;
-  }
+      where date_trunc('quarter',a.exposure_start) < date_trunc('quarter',to_date(sysdate))
+           ;;
+    }
 
   dimension: Accident_Quarter {
     type: date_quarter
@@ -406,5 +430,108 @@ left join
     sql: sum(eprem)/nullif(sum(evy),0);;
     value_format: "#,##0"
   }
+
+  measure: ad_freq_pred_jul19cred {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_ad_freq_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: ad_sev_pred_jul19cred {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_ad_sev_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ad_bc_pred_jul19cred {
+    type: number
+    sql: ${ad_freq_pred_jul19cred}*${ad_sev_pred_jul19cred};;
+    value_format: "#,##0"
+  }
+
+
+  measure: tp_freq_pred_jul19cred {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_tp_freq_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: tp_sev_pred_jul19cred {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_tp_sev_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: tp_bc_pred_jul19cred {
+    type: number
+    sql: ${tp_freq_pred_jul19cred}*${tp_sev_pred_jul19cred};;
+    value_format: "#,##0"
+  }
+
+
+
+  measure: pi_freq_pred_jul19cred {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_pi_freq_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: pi_sev_pred_jul19cred {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_pi_sev_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: pi_bc_pred_jul19cred {
+    type: number
+    sql: ${pi_freq_pred_jul19cred}*${pi_sev_pred_jul19cred};;
+    value_format: "#,##0"
+  }
+
+  measure: ot_freq_pred_jul19cred {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_ot_freq_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: ot_sev_pred_jul19cred {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_ot_sev_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ot_bc_pred_jul19cred {
+    type: number
+    sql: ${ot_freq_pred_jul19cred}*${ot_sev_pred_jul19cred};;
+    value_format: "#,##0"
+  }
+
+  measure: ws_freq_pred_jul19cred {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_ws_freq_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: ws_sev_pred_jul19cred {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_ws_sev_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ws_bc_pred_jul19cred {
+    type: number
+    sql: ${ws_freq_pred_jul19cred}*${ws_sev_pred_jul19cred};;
+    value_format: "#,##0"
+  }
+
+  measure: total_bc_pred_jul19cred {
+    type: number
+    sql: ${ad_bc_pred_jul19cred}+${tp_bc_pred_jul19cred}+${ot_bc_pred_jul19cred}+${pi_bc_pred_jul19cred}+${ws_bc_pred_jul19cred};;
+    value_format: "#,##0"
+  }
+
+  measure: total_lr_pred_jul19cred {
+    type: number
+    sql: (${ad_bc_pred_jul19cred}+${tp_bc_pred_jul19cred}+${ot_bc_pred_jul19cred}+${pi_bc_pred_jul19cred}+${ws_bc_pred_jul19cred})/${average_earned_prem};;
+    value_format: "0%"
+  }
+
+
+
+
+
+
+
 
   }
