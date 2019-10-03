@@ -12,3 +12,4 @@ persist_with: claims_development_datagroup
 
 explore: claims_development {}
 explore: expoclm_quarters {}
+explore: ice_claims_development {}
