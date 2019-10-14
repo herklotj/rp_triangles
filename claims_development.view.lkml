@@ -601,6 +601,12 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   }
 
+  measure: pi_tp_count_ratio {
+    type: number
+    sql: sum(pi_count)/nullif(sum(tp_count),0);;
+
+  }
+
 
   measure: ad_incurred {
       type: number
