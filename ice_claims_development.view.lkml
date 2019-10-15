@@ -114,7 +114,7 @@ view: ice_claims_development {
               ) prem
 
           left join
-            v_ice_claims_cumulative_test clm
+            v_ice_claims_cumulative clm
             on prem.polnum = clm.polnum and prem.acc_month = clm.acc_month and  clm.policyinception = prem.inception and clm.dev_period = prem.dev_period
            /* and  clm.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)))*/
             /*and prem.inception <= clm.incidentdate and (prem.inception+364) >= clm.incidentdate and prem.acc_month=clm.acc_month and exposure >0 and clm.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)*/
