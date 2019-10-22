@@ -38,11 +38,11 @@ view: ice_claims_development {
         ,ad_reported_count AS AD_reported
         ,ad_count AS AD_Non_Nil
         ,ad_paid - ad_paid_exc_rec as ad_paid_rec
-        ,CASE WHEN (tp_incurred - FLOOR(tp_incurred))*100 = 81 THEN 1 ELSE 0 END AS TP_Std_Reserve
-        ,CASE WHEN (ad_incurred - FLOOR(ad_incurred))*100 = 81 THEN 1 ELSE 0 END AS AD_Std_Reserve
-        ,CASE WHEN (pi_incurred - FLOOR(pi_incurred))*100 = 81 THEN 1 ELSE 0 END AS PI_Std_Reserve
-        ,CASE WHEN (ws_incurred - FLOOR(pi_incurred))*100 = 81 THEN 1 ELSE 0 END AS WS_Std_Reserve
-        ,CASE WHEN (ot_incurred - FLOOR(pi_incurred))*100 = 81 THEN 1 ELSE 0 END AS OT_Std_Reserve
+        ,CASE WHEN round(round(tp_incurred,2) - floor(tp_incurred),2) = 0.81 THEN 1 ELSE 0 END AS TP_Std_Reserve
+        ,CASE WHEN round(round(ad_incurred,2) - floor(ad_incurred),2) = 0.81 THEN 1 ELSE 0 END AS AD_Std_Reserve
+        ,CASE WHEN round(round(pi_incurred,2) - floor(pi_incurred),2) = 0.81 THEN 1 ELSE 0 END AS PI_Std_Reserve
+        ,CASE WHEN round(round(ws_incurred,2) - floor(ws_incurred),2) = 0.81 THEN 1 ELSE 0 END AS WS_Std_Reserve
+        ,CASE WHEN round(round(ot_incurred,2) - floor(ot_incurred),2) = 0.81 THEN 1 ELSE 0 END AS OT_Std_Reserve
         ,1.00*tp_count AS TP_Count
         ,1.00*tp_chire_count AS TP_Chire_Count
         ,1.00*AD_count AS AD_Count
@@ -350,6 +350,25 @@ view: ice_claims_development {
     sql: total_reported_count;;
 
   }
+
+  measure: tp_std_res_count {
+    type: sum
+    sql:  TP_Std_Reserve;;
+
+  }
+
+  measure: tp_std_res_proportion {
+    type: number
+    sql:  sum(TP_Std_Reserve)/nullif(sum(tp_count),0);;
+    value_format: "0.0%"
+  }
+
+  measure: ad_std_res_count {
+    type: sum
+    sql:  AD_Std_Reserve;;
+
+  }
+
 
   measure: reported_freq_ex_ws {
     type: number
