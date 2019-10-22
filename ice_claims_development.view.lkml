@@ -363,6 +363,19 @@ view: ice_claims_development {
     value_format: "0.0%"
   }
 
+  measure: pi_std_res_proportion {
+    type: number
+    sql:  sum(PI_Std_Reserve)/nullif(sum(pi_count),0);;
+    value_format: "0.0%"
+  }
+
+  measure: ad_std_res_proportion {
+    type: number
+    sql:  sum(AD_Std_Reserve)/nullif(sum(AD_count),0);;
+    value_format: "0.0%"
+  }
+
+
   measure: ad_std_res_count {
     type: sum
     sql:  AD_Std_Reserve;;
