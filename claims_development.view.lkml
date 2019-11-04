@@ -38,6 +38,7 @@ select
     ,ad_inc_exc_rec_count AS AD_reported
     ,ad_incurred_count AS AD_Non_Nil
     ,ad_paid_rec
+    ,ad_incurred - ad_inc_rec as ad_incurred_exc_rec
     ,CASE WHEN (tp_incurred - FLOOR(tp_incurred))*100 = 81 THEN 1 ELSE 0 END AS TP_Std_Reserve
     ,CASE WHEN (ad_incurred - FLOOR(ad_incurred))*100 = 81 THEN 1 ELSE 0 END AS AD_Std_Reserve
     ,CASE WHEN (pi_incurred - FLOOR(pi_incurred))*100 = 81 THEN 1 ELSE 0 END AS PI_Std_Reserve
@@ -381,6 +382,14 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.0%"
   }
 
+  measure: ad_nil_freq {
+    type: number
+    sql: sum(case when ad_incurred_exc_rec > 0 and ad_incurred < 50 then 1 else 0 end)/ ${exposure_cumulative} ;;
+    value_format: "0.0%"
+  }
+
+
+
   measure: tp_freq {
     type: number
     sql: sum(tp_count)/ ${exposure_cumulative} ;;
@@ -678,5 +687,9 @@ where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql:  sum(ws_paid) ;;
   }
 
+  measure: ad_reported_claim_freq {
+    type: number
+    sql:  sum(case when ad_incurred_exc_rec > 0 then 1 else 0 end) / ${exposure_cumulative};;
+  }
 
   }

@@ -35,6 +35,7 @@ view: ice_claims_development {
         ,ws_incurred - ws_incurred_exc_rec as ws_incurred_recoveries
         ,ot_incurred - ot_incurred_exc_rec as ot_incurred_recoveries
         ,total_incurred - total_incurred_exc_rec as total_incurred_recoveries
+        ,ad_incurred_exc_rec
         ,ad_reported_count AS AD_reported
         ,ad_count AS AD_Non_Nil
         ,ad_paid - ad_paid_exc_rec as ad_paid_rec
@@ -413,6 +414,12 @@ view: ice_claims_development {
     value_format: "0.0%"
   }
 
+  measure: ad_nil_freq {
+    type: number
+    sql: sum(case when ad_incurred_exc_rec > 0 and ad_incurred < 50 then 1 else 0 end)/ ${exposure_cumulative} ;;
+    value_format: "0.0%"
+  }
+
   measure: tp_freq {
     type: number
     sql: sum(tp_count)/ ${exposure_cumulative} ;;
@@ -709,6 +716,12 @@ view: ice_claims_development {
     type: number
     sql:  sum(ws_paid) ;;
   }
+
+  measure: ad_reported_claim_freq {
+    type: number
+    sql:  sum(case when ad_incurred_exc_rec > 0 then 1 else 0 end) / ${exposure_cumulative};;
+  }
+
 
 
 }
