@@ -420,6 +420,12 @@ view: ice_claims_development {
     value_format: "0.0%"
   }
 
+  measure: ad_reported_claim_freq {
+    type: number
+    sql:  sum(case when ad_incurred_exc_rec > 0 then 1 else 0 end) / ${exposure_cumulative};;
+  }
+
+
   measure: tp_freq {
     type: number
     sql: sum(tp_count)/ ${exposure_cumulative} ;;
@@ -717,10 +723,7 @@ view: ice_claims_development {
     sql:  sum(ws_paid) ;;
   }
 
-  measure: ad_reported_claim_freq {
-    type: number
-    sql:  sum(case when ad_incurred_exc_rec > 0 then 1 else 0 end) / ${exposure_cumulative};;
-  }
+
 
 
 
