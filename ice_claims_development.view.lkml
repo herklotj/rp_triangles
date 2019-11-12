@@ -408,10 +408,22 @@ view: ice_claims_development {
 
   measure: nonnil_count_exc_ws {
     type: sum
-    sql: total_count_exc_ws;;
+    sql: total_count_exc_ws*1.00;;
     description: "Total Non Nil Count Ex WS"
 
   }
+
+  measure: all_notifications_ex_ws {
+    type: number
+    sql:sum(all_notifications_exc_ws*1.00);;
+  }
+
+  measure: non_nil_pct_notfs {
+    type:  number
+    sql: ${nonnil_count_exc_ws}/${all_notifications_ex_ws} ;;
+    value_format: "0.0%"
+  }
+
 
 
   measure: nonnil_freq_ex_ws {
