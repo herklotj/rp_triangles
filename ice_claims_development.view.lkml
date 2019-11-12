@@ -72,6 +72,8 @@ view: ice_claims_development {
         ,case when total_incurred > 1000000 then 1000000 else total_incurred end as total_incurred_cap_1m
         ,case when settleddate <= dev_month  and total_reported_count > 0 then 1.00 else 0 end as settled_indicator
         ,inception_strategy
+        ,case when (notificationdate-day(notificationdate) +1) <=dev_month then 1 else 0 end as all_notifications
+        ,case when ws_count = 0 and (notificationdate-day(notificationdate) +1) <=dev_month then 1 else 0 end as all_notifications_exc_ws
     from
       (
 
@@ -391,6 +393,17 @@ view: ice_claims_development {
     value_format: "0.00%"
   }
 
+  measure: all_notification_freq {
+    type: number
+    sql: sum(all_notifications) / ${exposure_cumulative} ;;
+    value_format: "0.00%"
+  }
+
+  measure: all_notification_ex_ws_freq {
+    type: number
+    sql: sum(all_notifications_exc_ws) / ${exposure_cumulative} ;;
+    value_format: "0.00%"
+  }
 
 
   measure: nonnil_count_exc_ws {
