@@ -748,7 +748,11 @@ view: ice_claims_development {
     sql:  sum(ws_paid) ;;
   }
 
+  measure: recoveries_paid {
+      type: sum
+      sql: ad_paid_rec ;;
 
+  }
 
 
 
