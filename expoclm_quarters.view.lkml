@@ -81,9 +81,25 @@ view: expoclm_quarters {
     case when ncdp = 'N' then jcred.predicted_ws_freq_an*jcredsc.WS_F else jcred.predicted_ws_freq_ap*jcredsc.WS_F end *evy    *0.895      as predicted_ws_freq_jul19cred,
     case when ncdp = 'N' then jcred.predicted_ws_sev_an*jcredsc.WS_S else jcred.predicted_ws_sev_ap*jcredsc.WS_S end *evy      *1.22       as predicted_ws_sev_jul19cred,
 
+    case when ncdp = 'N' then jul18nm.predicted_ad_freq_an else jul18nm.predicted_ad_freq_ap end *evy    *1.00       as predicted_ad_freq_jul18nm,
+    case when ncdp = 'N' then jul18nm.predicted_ad_sev_an else jul18nm.predicted_ad_sev_ap end *evy      *1.00       as predicted_ad_sev_jul18nm,
+    case when ncdp = 'N' then jul18nm.predicted_pi_freq_an else jul18nm.predicted_pi_freq_ap end *evy    *1.00       as predicted_pi_freq_jul18nm,
+    case when ncdp = 'N' then jul18nm.predicted_pi_sev_an else jul18nm.predicted_pi_sev_ap end *evy      *1.00       as predicted_pi_sev_jul18nm,
+    case when ncdp = 'N' then jul18nm.predicted_tpd_freq_an else jul18nm.predicted_tpd_freq_ap end *evy  *1.00       as predicted_tp_freq_jul18nm,
+    case when ncdp = 'N' then jul18nm.predicted_tpd_sev_an else jul18nm.predicted_tpd_sev_ap end *evy    *1.00       as predicted_tp_sev_jul18nm,
+    case when ncdp = 'N' then jul18nm.predicted_ot_freq_an else jul18nm.predicted_ot_freq_ap end *evy    *1.00       as predicted_ot_freq_jul18nm,
+    case when ncdp = 'N' then jul18nm.predicted_ot_sev_an else jul18nm.predicted_ot_sev_ap end *evy      *1.00       as predicted_ot_sev_jul18nm,
+    case when ncdp = 'N' then jul18nm.predicted_ws_freq_an else jul18nm.predicted_ws_freq_ap end *evy    *1.00      as predicted_ws_freq_jul18nm,
+    case when ncdp = 'N' then jul18nm.predicted_ws_sev_an else jul18nm.predicted_ws_sev_ap end *evy      *1.00       as predicted_ws_sev_jul18nm,
+
+
+
     case when b.dup = 1 and jcred.dup=1 then 1 else 0 end as match_flag,
     date_trunc('quarter',a.exposure_start) as quarter,
     uwyr
+
+
+
   from
             expoclm_quarters a
   left join
@@ -102,7 +118,16 @@ view: expoclm_quarters {
             ) jcred
             on a.quote_id = jcred.quote_id and jcred.dup = 1
 
-     left join
+ left join
+            (select
+               *,
+               row_number() over(partition by quote_id) as dup
+             from aapricing.uncalibrated_scores_jul18
+            ) jul18nm
+            on a.quote_id = jul18nm.quote_id and jul18nm.dup = 1
+
+
+    left join
         motor_model_calibrations aug18sc
         on aug18sc.policy_start_month = date_trunc('month',a.termincep) and aug18sc.model='August_18_pricing' and aug18sc.end = '9999-01-01'
 
@@ -533,5 +558,212 @@ view: expoclm_quarters {
 
 
 
+  measure: ad_freq_pred_jul18nm {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_ad_freq_jul18nm else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: ad_sev_pred_jul18nm {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_ad_sev_jul18nm else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ad_bc_pred_jul18nm {
+    type: number
+    sql: ${ad_freq_pred_jul18nm}*${ad_sev_pred_jul18nm};;
+    value_format: "#,##0"
+  }
+
+
+  measure: tp_freq_pred_jul18nm {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_tp_freq_jul18nm else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: tp_sev_pred_jul18nm {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_tp_sev_jul18nm else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: tp_bc_pred_jul18nm {
+    type: number
+    sql: ${tp_freq_pred_jul18nm}*${tp_sev_pred_jul18nm};;
+    value_format: "#,##0"
+  }
+
+
+
+  measure: pi_freq_pred_jul18nm {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_pi_freq_jul18nm else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: pi_sev_pred_jul18nm {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_pi_sev_jul18nm else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: pi_bc_pred_jul18nm {
+    type: number
+    sql: ${pi_freq_pred_jul18nm}*${pi_sev_pred_jul18nm};;
+    value_format: "#,##0"
+  }
+
+  measure: ot_freq_pred_jul18nm {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_ot_freq_jul18nm else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: ot_sev_pred_jul18nm {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_ot_sev_jul18nm else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ot_bc_pred_jul18nm {
+    type: number
+    sql: ${ot_freq_pred_jul18nm}*${ot_sev_pred_jul18nm};;
+    value_format: "#,##0"
+  }
+
+  measure: ws_freq_pred_jul18nm {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_ws_freq_jul18nm else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: ws_sev_pred_jul18nm {
+    type: number
+    sql: sum(case when match_flag = 1 then predicted_ws_sev_jul18nm else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ws_bc_pred_jul18nm {
+    type: number
+    sql: ${ws_freq_pred_jul18nm}*${ws_sev_pred_jul18nm};;
+    value_format: "#,##0"
+  }
+
+  measure: total_bc_pred_jul18nm {
+    type: number
+    sql: ${ad_bc_pred_jul18nm}+${tp_bc_pred_jul18nm}+${ot_bc_pred_jul18nm}+${pi_bc_pred_jul18nm}+${ws_bc_pred_jul18nm};;
+    value_format: "#,##0"
+  }
+
+  measure: total_lr_pred_jul18nm {
+    type: number
+    sql: (${ad_bc_pred_jul18nm}+${tp_bc_pred_jul18nm}+${ot_bc_pred_jul18nm}+${pi_bc_pred_jul18nm}+${ws_bc_pred_jul18nm})/${average_earned_prem};;
+    value_format: "0%"
+  }
+
+
+
+
+
+
+
+
+
+
+  measure: ad_freq_pred_combined {
+    type: number
+    sql: sum(case when match_flag = 1 and scheme_number=103 then predicted_ad_freq_jul18nm when match_flag = 1 and scheme_number=102 then predicted_ad_freq_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: ad_sev_pred_combined {
+    type: number
+    sql: sum(case when match_flag = 1 and scheme_number=103 then predicted_ad_sev_jul18nm when match_flag = 1 and scheme_number=102 then predicted_ad_sev_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+
+  measure: ad_bc_pred_combined {
+    type: number
+    sql: ${ad_freq_pred_combined}*${ad_sev_pred_combined};;
+    value_format: "#,##0"
+  }
+
+  measure: tp_freq_pred_combined {
+    type: number
+    sql: sum(case when match_flag = 1 and scheme_number=103 then predicted_tp_freq_jul18nm when match_flag = 1 and scheme_number=102 then predicted_tp_freq_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: tp_sev_pred_combined {
+    type: number
+    sql: sum(case when match_flag = 1 and scheme_number=103 then predicted_tp_sev_jul18nm when match_flag = 1 and scheme_number=102 then predicted_tp_sev_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+
+  measure: tp_bc_pred_combined {
+    type: number
+    sql: ${tp_freq_pred_combined}*${tp_sev_pred_combined};;
+    value_format: "#,##0"
+  }
+
+  measure: pi_freq_pred_combined {
+    type: number
+    sql: sum(case when match_flag = 1 and scheme_number=103 then predicted_pi_freq_jul18nm when match_flag = 1 and scheme_number=102 then predicted_pi_freq_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: pi_sev_pred_combined {
+    type: number
+    sql: sum(case when match_flag = 1 and scheme_number=103 then predicted_pi_sev_jul18nm when match_flag = 1 and scheme_number=102 then predicted_pi_sev_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+
+  measure: pi_bc_pred_combined {
+    type: number
+    sql: ${pi_freq_pred_combined}*${pi_sev_pred_combined};;
+    value_format: "#,##0"
+  }
+
+  measure: ot_freq_pred_combined {
+    type: number
+    sql: sum(case when match_flag = 1 and scheme_number=103 then predicted_ot_freq_jul18nm when match_flag = 1 and scheme_number=102 then predicted_ot_freq_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: ot_sev_pred_combined {
+    type: number
+    sql: sum(case when match_flag = 1 and scheme_number=103 then predicted_ot_sev_jul18nm when match_flag = 1 and scheme_number=102 then predicted_ot_sev_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+
+  measure: ot_bc_pred_combined {
+    type: number
+    sql: ${ot_freq_pred_combined}*${ot_sev_pred_combined};;
+    value_format: "#,##0"
+  }
+
+  measure: ws_freq_pred_combined {
+    type: number
+    sql: sum(case when match_flag = 1 and scheme_number=103 then predicted_ws_freq_jul18nm when match_flag = 1 and scheme_number=102 then predicted_ws_freq_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: ws_sev_pred_combined {
+    type: number
+    sql: sum(case when match_flag = 1 and scheme_number=103 then predicted_ws_sev_jul18nm when match_flag = 1 and scheme_number=102 then predicted_ws_sev_jul19cred else 0 end)/sum(case when match_flag = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+
+  measure: ws_bc_pred_combined {
+    type: number
+    sql: ${ws_freq_pred_combined}*${ws_sev_pred_combined};;
+    value_format: "#,##0"
+  }
+
+
+  measure: total_bc_pred_combined {
+    type: number
+    sql: ${ad_bc_pred_combined}+${tp_bc_pred_combined}+${ot_bc_pred_combined}+${pi_bc_pred_combined}+${ws_bc_pred_combined};;
+    value_format: "#,##0"
+  }
+
+  measure: total_lr_pred_combined {
+    type: number
+    sql: (${ad_bc_pred_combined}+${tp_bc_pred_combined}+${ot_bc_pred_combined}+${pi_bc_pred_combined}+${ws_bc_pred_combined})/${average_earned_prem};;
+    value_format: "0%"
+  }
 
   }

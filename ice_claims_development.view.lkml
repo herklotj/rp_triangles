@@ -223,6 +223,22 @@ view: ice_claims_development {
     sql: ${TABLE}.dev_period_uw_year ;;
   }
 
+  dimension: exclude_large_loss_pols {
+    type: string
+    sql:case when polnum ='AAPMB0000467125' or polnum ='AAPMB0000340730' or polnum ='AAPMB0000370516' or polnum ='AAPMB0000042813' then 'Large Losses' else 'No Large Losses' end
+              ;;
+  }
+
+  dimension: tp_inc_acc_band {
+    type: tier
+    tiers: [0,100,500,1000,1500,2000,2500,2600,3000,3500,4000,4500,5000,10000]
+    style: integer
+    value_format_name: gbp_0
+    sql: ${TABLE}.tp_incurred
+   ;;
+
+  }
+
   measure: total_incurred {
     type: sum
     sql: total_incurred ;;
@@ -312,6 +328,18 @@ view: ice_claims_development {
     value_format: "0%"
   }
 
+  measure: tp_paid_lr {
+    type: number
+    sql: sum(tp_paid)/sum(earned_premium_cumulative);;
+    value_format: "0%"
+  }
+
+  measure: total_paid_lr {
+    type: number
+    sql: sum(total_paid)/sum(earned_premium_cumulative);;
+    value_format: "0%"
+  }
+
   measure: pi_loss_ratio {
     type: number
     sql: sum(pi_incurred)/sum(earned_premium_cumulative);;
@@ -351,6 +379,12 @@ view: ice_claims_development {
   measure: reported_count {
     type: sum
     sql: total_reported_count;;
+
+  }
+
+  measure: tp_count {
+    type: sum
+    sql: tp_count;;
 
   }
 
