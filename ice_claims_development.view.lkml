@@ -693,6 +693,12 @@ view: ice_claims_development {
 
   }
 
+  measure: tp_chirepct {
+    type: number
+    sql: sum(tp_chire_count)/sum(total_reported_count_exc_ws);;
+
+  }
+
   measure: pi_pct {
     type: number
     sql: sum(pi_count)/sum(total_reported_count_exc_ws);;
