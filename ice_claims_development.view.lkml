@@ -743,6 +743,11 @@ view: ice_claims_development {
     sql:  sum(case when (pi_incurred+large_pi_incurred) > 25000 then 25000 else (pi_incurred+large_pi_incurred) end) ;;
   }
 
+  measure: pi_xs_incurred_cap1m {
+    type: number
+    sql:  sum(case when (pi_incurred+large_pi_incurred) > 1000000 then 975000 else (large_pi_incurred) end) ;;
+  }
+
   measure: ot_incurred {
     type: number
     sql:  sum(ot_incurred) ;;
