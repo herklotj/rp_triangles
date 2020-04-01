@@ -4,7 +4,7 @@ view: ice_claims_development {
     select
         a.polnum
         ,scheme
-        ,renewseq
+        ,a.renewseq
         ,inception
         ,uw_month
         ,uw_year
@@ -71,9 +71,11 @@ view: ice_claims_development {
         ,case when total_incurred > 50000 then 50000 else total_incurred end as total_incurred_cap_50k
         ,case when total_incurred > 1000000 then 1000000 else total_incurred end as total_incurred_cap_1m
         ,case when settleddate <= dev_month  and total_reported_count > 0 then 1.00 else 0 end as settled_indicator
-        ,inception_strategy
+        ,po.inception_strategy
         ,case when (notificationdate-day(notificationdate) +1) <=dev_month then 1 else 0 end as all_notifications
         ,case when ws_count = 0 and (notificationdate-day(notificationdate) +1) <=dev_month then 1 else 0 end as all_notifications_exc_ws
+        ,fcc.FNOL_cause_code
+        ,ccc.current_cause_code
     from
       (
 
@@ -124,10 +126,15 @@ view: ice_claims_development {
           where prem.acc_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
       )a
-      left join
-          (select polnum, bustrnno, inception_strategy from expoclm
-          ) exp
-        on a.polnum = exp.polnum and exp.bustrnno = 1
+      left join v_ice_policy_origin po ON a.polnum = po.policy_reference_number
+      left join (select claim_number,
+             incident_cause_code AS FNOL_cause_code
+      from ice_dim_claim
+      where dim_effective_date_from = '1900-01-01') fcc on fcc.claim_number = a.claimnum
+      left join (select claim_number,
+                    incident_cause_code as current_cause_code
+             from ice_dim_claim
+             where dim_effective_date_to = '2099-12-31') ccc on ccc.claim_number = a.claimnum
     where a.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
 
@@ -236,7 +243,24 @@ view: ice_claims_development {
     value_format_name: gbp_0
     sql: ${TABLE}.tp_incurred
    ;;
+  }
 
+  dimension: tp_reserve_info {
+    type: string
+    sql: case when ${TABLE}.tp_count = 1 then
+            case when ${TABLE}.tp_std_reserve = 0 then 'IR'
+            else 'SIR' end
+          else 'No TP' end;;
+  }
+
+  dimension: FNOL_Cause_Code {
+    type: string
+    sql: ${TABLE}.FNOL_Cause_Code ;;
+  }
+
+  dimension: current_Cause_Code {
+    type: string
+    sql: ${TABLE}.current_Cause_Code ;;
   }
 
   measure: total_incurred {
