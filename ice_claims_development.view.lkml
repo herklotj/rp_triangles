@@ -194,9 +194,9 @@ FROM (SELECT *,
                    FROM ice_aa_tp_intervention tpi_int) summary
              GROUP BY claim_number) summary2 ON a.claimnum = summary2.claim_number
   LEFT JOIN v_ice_policy_origin po ON a.polnum = po.policy_reference_number
-  LEFT JOIN (SELECT polnum, bustrnno, inception_strategy FROM expoclm) EXP
+  LEFT JOIN (SELECT polnum, inevncnt, inception_strategy FROM expoclm) EXP
          ON a.polnum = exp.polnum
-        AND exp.bustrnno = 1
+        AND exp.inevncnt = 1
 WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
 
