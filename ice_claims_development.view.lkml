@@ -793,6 +793,16 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   }
 
+
+  measure: ad_with_partial_recovery {
+    type: number
+    description: ""
+    sql: sum(case when ad_incurred > 0 and ad_incurred_recoveries < 0 then 1.00 else 0.00 end) / sum(ad_reported);;
+    value_format: "0.0%"
+  }
+
+
+
   measure: total_paid {
     type: sum
     sql: total_paid;;
