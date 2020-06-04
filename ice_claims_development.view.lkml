@@ -347,6 +347,24 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
    ;;
   }
 
+  dimension: ad_inc_acc_band {
+    type: tier
+    tiers: [0,100,500,1000,1500,2000,2500,2600,3000,3500,4000,4500,5000,10000]
+    style: integer
+    value_format_name: gbp_0
+    sql: ${TABLE}.ad_incurred
+      ;;
+  }
+
+  dimension: ad_inc_exc_rec_acc_band {
+    type: tier
+    tiers: [0,100,500,1000,1500,2000,2500,2600,3000,3500,4000,4500,5000,10000]
+    style: integer
+    value_format_name: gbp_0
+    sql: ${TABLE}.ad_incurred_exc_rec
+      ;;
+  }
+
   dimension: tp_reserve_info {
     type: string
     sql: case when ${TABLE}.tp_count = 1 then
