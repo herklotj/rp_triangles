@@ -50,6 +50,10 @@ view: ice_claims_development {
        ad_incurred_exc_rec,
        ad_reported_count AS AD_reported,
        ad_count AS AD_Non_Nil,
+       CASE
+         WHEN (ad_incurred - ad_fees_incurred)> 150 THEN 1
+         ELSE 0
+       END AS ad_collared_count,
        ad_paid - ad_paid_exc_rec AS ad_paid_rec,
        CASE
          WHEN ROUND(ROUND(tp_incurred,2) - FLOOR(tp_incurred),2) = 0.81 THEN 1
@@ -637,6 +641,12 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: ad_freq {
     type: number
     sql: sum(ad_count)/ ${exposure_cumulative} ;;
+    value_format: "0.0%"
+  }
+
+  measure: ad_freq_over150 {
+    type: number
+    sql: sum(ad_collared_count)/ ${exposure_cumulative} ;;
     value_format: "0.0%"
   }
 
