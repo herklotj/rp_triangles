@@ -544,6 +544,11 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   }
 
+  measure: ad_count {
+    type: sum
+    sql: ad_count;;
+
+  }
   measure: tp_count {
     type: sum
     sql: tp_count;;
