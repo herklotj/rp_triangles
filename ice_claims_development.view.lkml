@@ -831,6 +831,14 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.0%"
   }
 
+  measure: ad_with_nearly_full_recovery {
+    type: number
+    description: "Recovery to within £10"
+    sql: sum(case when ad_incurred < 10 and ad_incurred_exc_rec > 0 then 1.00 else 0.00 end) / sum(ad_reported);;
+    value_format: "0.0%"
+  }
+
+
   measure: ad_with_no_recovery {
     type: number
     description: ""
@@ -838,7 +846,12 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.0%"
   }
 
-
+  measure: ad_with_over_recovery {
+    type: number
+    description: ""
+    sql: sum(case when ad_incurred < -10 and ad_incurred_exc_rec > 0 then 1.000 else 0.000 end) / sum(ad_reported);;
+    value_format: "0.00%"
+  }
 
   measure: total_paid {
     type: sum
