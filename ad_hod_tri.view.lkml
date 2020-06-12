@@ -35,7 +35,7 @@ view: ad_hod_tri {
            months_between(dev_month,acc_qtr) AS dev_period_acc_qtr,
            months_between(dev_month +day(uw_year) -1,uw_year) AS dev_period_uw_year,
            months_between(dev_month,uw_qtr) AS dev_period_uw_qtr,
-           AD_count,
+           1.00*AD_count as AD_count,
            total_incurred AS ad_incurred,
            total_paid AS ad_paid,
            fee_paid,
@@ -54,14 +54,14 @@ view: ad_hod_tri {
            pb_incurred,
            other_paid,
            other_incurred,
-           fee_count,
-           veh_count,
-           rec_count,
-           hire_count,
-           store_count,
-           ccs_count,
-           pb_count,
-           other_count,
+           1.00*fee_count as fee_count,
+           1.00*veh_count as veh_count,
+           1.00*rec_count as rec_count,
+           1.00*hire_count as hire_count,
+           1.00*store_count as store_count,
+           1.00*ccs_count as ccs_count,
+           1.00*pb_count as pb_count,
+           1.00*other_count as other_count,
            po.inception_strategy
     FROM (SELECT *,
                  '2999-01-01' AS settleddate
@@ -236,7 +236,6 @@ view: ad_hod_tri {
     sql: ad_count;;
   }
 
-
   measure: ad_freq {
     type: number
     sql: sum(ad_count)/ ${exposure_cumulative} ;;
@@ -248,13 +247,10 @@ view: ad_hod_tri {
     sql: sum(exposure) ;;
   }
 
-
   measure: ad_sev {
     type: number
     sql: sum(ad_incurred)/ sum(ad_count) ;;
-
   }
-
 
   measure: ad_incurred {
     type: number
@@ -295,6 +291,11 @@ view: ad_hod_tri {
     value_format: "0%"
   }
 
+  measure: veh_sev {
+    type: number
+    sql: sum(veh_incurred)/ sum(veh_count) ;;
+  }
+
   measure: rec_count {
     type: sum
     sql: fee_count;;
@@ -304,6 +305,11 @@ view: ad_hod_tri {
     type: number
     sql: sum(rec_count)/ ${exposure_cumulative} ;;
     value_format: "0.0%"
+  }
+
+  measure: rec_sev {
+    type: number
+    sql: sum(rec_incurred)/ sum(rec_count) ;;
   }
 
   measure: rec_proportion {
@@ -323,6 +329,11 @@ view: ad_hod_tri {
     value_format: "0.0%"
   }
 
+  measure: hire_sev {
+    type: number
+    sql: sum(hire_incurred)/ sum(hire_count) ;;
+  }
+
   measure: hire_proportion {
     type: number
     sql: sum(hire_count)/ sum(ad_count) ;;
@@ -338,6 +349,11 @@ view: ad_hod_tri {
     type: number
     sql: sum(store_count)/ ${exposure_cumulative} ;;
     value_format: "0.0%"
+  }
+
+  measure: store_sev {
+    type: number
+    sql: sum(store_incurred)/ sum(store_count) ;;
   }
 
   measure: store_proportion {
@@ -357,6 +373,11 @@ view: ad_hod_tri {
     value_format: "0.0%"
   }
 
+  measure: ccs_sev {
+    type: number
+    sql: sum(ccs_incurred)/ sum(ccs_count) ;;
+  }
+
   measure: ccs_proportion {
     type: number
     sql: sum(ccs_count)/ sum(ad_count) ;;
@@ -374,6 +395,11 @@ view: ad_hod_tri {
     value_format: "0.0%"
   }
 
+  measure: pb_sev {
+    type: number
+    sql: sum(pb_incurred)/ sum(pb_count) ;;
+  }
+
   measure: pb_proportion {
     type: number
     sql: sum(pb_count)/ sum(ad_count) ;;
@@ -389,6 +415,11 @@ view: ad_hod_tri {
     type: number
     sql: sum(other_count)/ ${exposure_cumulative} ;;
     value_format: "0.0%"
+  }
+
+  measure: other_sev {
+    type: number
+    sql: sum(other_incurred)/ sum(other_count) ;;
   }
 
   measure: other_proportion {
