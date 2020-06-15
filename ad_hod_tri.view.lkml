@@ -311,6 +311,21 @@ view: ad_hod_tri {
     value_format_name: gbp
   }
 
+  measure: veh_paid_freq {
+    type: number
+    sql: sum(case when veh_paid > 0 then veh_count else 0 end)/ ${exposure_cumulative} ;;
+  }
+
+  measure: veh_fully_paid_freq {
+    type: number
+    sql: sum(case when veh_paid > 0 and veh_paid = veh_incurred then veh_count else 0 end)/ ${exposure_cumulative} ;;
+  }
+
+  measure: veh_fully_paid_prop {
+    type: number
+    sql: sum(case when veh_paid > 0 and veh_paid = veh_incurred then veh_count else 0 end)/ sum(case when veh_paid > 0 then veh_count else 0 end) ;;
+  }
+
   measure: rec_count {
     type: sum
     sql: fee_count;;
