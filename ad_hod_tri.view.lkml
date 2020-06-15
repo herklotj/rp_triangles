@@ -250,25 +250,25 @@ view: ad_hod_tri {
   measure: ad_sev {
     type: number
     sql: sum(ad_incurred)/ sum(ad_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: ad_incurred {
     type: number
     sql:  sum(ad_incurred) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: ad_paid {
     type: number
     sql:  sum(ad_paid) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: ad_paid_sev {
     type: number
     sql: sum(ad_paid)/ sum(ad_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: fee_count {
@@ -302,13 +302,13 @@ view: ad_hod_tri {
   measure: veh_sev {
     type: number
     sql: sum(veh_incurred)/ sum(veh_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: veh_paid_sev {
     type: number
     sql: sum(veh_paid)/ sum(veh_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: rec_count {
@@ -325,7 +325,7 @@ view: ad_hod_tri {
   measure: rec_sev {
     type: number
     sql: sum(rec_incurred)/ sum(rec_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: rec_proportion {
@@ -337,7 +337,7 @@ view: ad_hod_tri {
   measure: rec_paid_sev {
     type: number
     sql: sum(rec_paid)/ sum(rec_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: hire_count {
@@ -354,7 +354,7 @@ view: ad_hod_tri {
   measure: hire_sev {
     type: number
     sql: sum(hire_incurred)/ sum(hire_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: hire_proportion {
@@ -366,7 +366,7 @@ view: ad_hod_tri {
   measure: hire_paid_sev {
     type: number
     sql: sum(hire_paid)/ sum(hire_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: store_count {
@@ -383,7 +383,7 @@ view: ad_hod_tri {
   measure: store_sev {
     type: number
     sql: sum(store_incurred)/ sum(store_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: store_proportion {
@@ -395,7 +395,7 @@ view: ad_hod_tri {
   measure: store_paid_sev {
     type: number
     sql: sum(store_paid)/ sum(store_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: ccs_count {
@@ -412,7 +412,7 @@ view: ad_hod_tri {
   measure: ccs_sev {
     type: number
     sql: sum(ccs_incurred)/ sum(ccs_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: ccs_proportion {
@@ -424,7 +424,7 @@ view: ad_hod_tri {
   measure: ccs_paid_sev {
     type: number
     sql: sum(ccs_paid)/ sum(ccs_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: pb_count {
@@ -441,7 +441,7 @@ view: ad_hod_tri {
   measure: pb_sev {
     type: number
     sql: sum(pb_incurred)/ sum(pb_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: pb_proportion {
@@ -453,7 +453,7 @@ view: ad_hod_tri {
   measure: pb_paid_sev {
     type: number
     sql: sum(pb_paid)/ sum(pb_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: other_count {
@@ -470,7 +470,7 @@ view: ad_hod_tri {
   measure: other_sev {
     type: number
     sql: sum(other_incurred)/ sum(other_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   measure: other_proportion {
@@ -482,7 +482,7 @@ view: ad_hod_tri {
   measure: other_paid_sev {
     type: number
     sql: sum(other_paid)/ sum(other_count) ;;
-    value_format: "£0.00"
+    value_format_name: gbp
   }
 
   }
