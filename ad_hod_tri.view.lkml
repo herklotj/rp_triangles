@@ -316,14 +316,20 @@ view: ad_hod_tri {
     sql: sum(case when veh_paid > 0 then veh_count else 0 end)/ ${exposure_cumulative} ;;
   }
 
-  measure: veh_fully_paid_freq {
+  measure: veh_settled_freq {
     type: number
     sql: sum(case when veh_paid > 0 and veh_paid = veh_incurred then veh_count else 0 end)/ ${exposure_cumulative} ;;
   }
 
-  measure: veh_fully_paid_prop {
+  measure: veh_with_payment_settled_prop {
     type: number
     sql: sum(case when veh_paid > 0 and veh_paid = veh_incurred then veh_count else 0 end)/ sum(case when veh_paid > 0 then veh_count else 0 end) ;;
+  }
+
+  measure: veh_settled_sev {
+    type: number
+    sql: sum(case when veh_paid > 0 and veh_paid = veh_incurred then veh_paid else 0 end)/ sum(case when veh_paid > 0 and veh_paid = veh_incurred then veh_count else 0 end) ;;
+    value_format_name: gbp
   }
 
   measure: rec_count {
