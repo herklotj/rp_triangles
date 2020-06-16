@@ -513,10 +513,16 @@ view: ad_hod_tri {
     sql: tl_count;;
   }
 
-    measure: tl_prop {
+    measure: tl_prop_all_ad {
     type: number
     sql: sum(tl_count)/ sum(ad_count) ;;
       value_format: "0.0%"
+  }
+
+  measure: tl_prop_veh {
+    type: number
+    sql: sum(tl_count)/ sum(veh_count) ;;
+    value_format: "0.0%"
   }
 
   }
