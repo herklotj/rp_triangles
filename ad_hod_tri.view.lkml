@@ -62,6 +62,8 @@ view: ad_hod_tri {
            1.00*ccs_count as ccs_count,
            1.00*pb_count as pb_count,
            1.00*other_count as other_count,
+           1.00*tl_count as tl_count,
+           1.00*repair_count as repair_count,
            po.inception_strategy
     FROM (SELECT *,
                  '2999-01-01' AS settleddate
@@ -504,6 +506,17 @@ view: ad_hod_tri {
     type: number
     sql: sum(other_paid)/ sum(other_count) ;;
     value_format_name: gbp
+  }
+
+  measure: tl_count {
+    type: sum
+    sql: tl_count;;
+  }
+
+    measure: tl_prop {
+    type: number
+    sql: sum(tl_count)/ sum(ad_count) ;;
+      value_format: "0.0%"
   }
 
   }
