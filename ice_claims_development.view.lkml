@@ -110,11 +110,19 @@ view: ice_claims_development {
          WHEN total_incurred > 1000000 THEN 1000000
          ELSE total_incurred
        END AS total_incurred_cap_1m,
-       CASE
+
+
+      /*CASE
          WHEN settleddate <= dev_month AND total_reported_count > 0 THEN 1.00
          ELSE 0
-       END AS settled_indicator,
-       po.inception_strategy,
+       END AS settled_indicator,*/
+      CASE WHEN total_incurred = total_paid and total_count =1 then 1 else 0 end as Settled_Indicator,
+      CASE WHEN ad_incurred = ad_paid and ad_count =1 then 1 else 0 end as AD_Settled_Indicator,
+      CASE WHEN tp_incurred = tp_paid and tp_count =1 then 1 else 0 end as TP_Settled_Indicator,
+      CASE WHEN pi_incurred = pi_paid and pi_count =1 then 1 else 0 end as PI_Settled_Indicator,
+      CASE WHEN ot_incurred = ad_paid and ot_count =1 then 1 else 0 end as OT_Settled_Indicator,
+      CASE WHEN ws_incurred = ad_paid and ws_count =1 then 1 else 0 end as WS_Settled_Indicator,
+      po.inception_strategy,
        CASE
          WHEN (notificationdate -day(notificationdate) +1) <= dev_month THEN 1
          ELSE 0
@@ -728,7 +736,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: ad_settled_sev {
     type: number
-    sql: sum(case when settled_indicator =1 then ad_incurred else 0 end) / sum(case when settled_indicator =1 then ad_count else 0.0000000000000001 end) ;;
+    sql: sum(case when AD_Settled_Indicator =1 then ad_incurred else 0 end) / sum(case when AD_Settled_Indicator =1 then ad_count else 0.0000000000000001 end) ;;
 
   }
 
@@ -746,7 +754,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: tp_settled_sev {
     type: number
-    sql: sum(case when settled_indicator =1 then tp_incurred else 0 end) / sum(case when settled_indicator =1 then tp_count else 0.0000000000000001 end) ;;
+    sql: sum(case when tp_settled_indicator =1 then tp_incurred else 0 end) / sum(case when tp_settled_indicator =1 then tp_count else 0.0000000000000001 end) ;;
 
   }
 
@@ -764,7 +772,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: pi_settled_sev {
     type: number
-    sql: sum(case when settled_indicator =1 then pi_incurred else 0 end) / sum(case when settled_indicator =1 then pi_count else 0.0000000000000001 end) ;;
+    sql: sum(case when pi_settled_indicator =1 then pi_incurred else 0 end) / sum(case when pi_settled_indicator =1 then pi_count else 0.0000000000000001 end) ;;
 
   }
 
@@ -776,7 +784,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: ot_settled_sev {
     type: number
-    sql: sum(case when settled_indicator =1 then ot_incurred else 0 end) / sum(case when settled_indicator =1 then ot_count else 0.0000000000000001 end) ;;
+    sql: sum(case when ot_settled_indicator =1 then ot_incurred else 0 end) / sum(case when ot_settled_indicator =1 then ot_count else 0.0000000000000001 end) ;;
 
   }
 
@@ -788,13 +796,48 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: ws_settled_sev {
     type: number
-    sql: sum(case when settled_indicator =1 then ws_incurred else 0 end) / sum(case when settled_indicator =1 then ws_count else 0.0000000000000001 end) ;;
+    sql: sum(case when ws_settled_indicator =1 then ws_incurred else 0 end) / sum(case when ws_settled_indicator =1 then ws_count else 0.0000000000000001 end) ;;
 
   }
 
   measure: settled_proporition {
     type: number
     sql: ${settled_indicator} / ${reported_count}  ;;
+    description: "Settled Proportion"
+    value_format: "0%"
+  }
+
+  measure: AD_settled_proporition {
+    type: number
+    sql: sum(ad_settled_indicator) / sum(ad_count)  ;;
+    description: "Settled Proportion"
+    value_format: "0%"
+  }
+
+  measure: TP_settled_proporition {
+    type: number
+    sql: sum(tp_settled_indicator) / sum(tp_count)  ;;
+    description: "Settled Proportion"
+    value_format: "0%"
+  }
+
+  measure: PI_settled_proporition {
+    type: number
+    sql: sum(pi_settled_indicator) / sum(pi_count)  ;;
+    description: "Settled Proportion"
+    value_format: "0%"
+  }
+
+  measure: OT_settled_proporition {
+    type: number
+    sql: sum(ot_settled_indicator) / sum(ot_count)  ;;
+    description: "Settled Proportion"
+    value_format: "0%"
+  }
+
+  measure: ws_settled_proporition {
+    type: number
+    sql: sum(ws_settled_indicator) / sum(ws_count)  ;;
     description: "Settled Proportion"
     value_format: "0%"
   }
