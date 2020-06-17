@@ -24,7 +24,8 @@ view: reserving {
   dimension_group: accident_month {
     type: time
     timeframes: [
-      month
+      month,
+      year
     ]
     sql: ${TABLE}.acc_month ;;
   }
@@ -107,6 +108,75 @@ view: reserving {
 
 
 
+  measure: total_reported_count_exc_ws {
+    type: sum
+    sql: total_reported_count_exc_ws ;;
+  }
+
+  measure:total_reported_exc_ws_freq {
+    type: number
+    sql: ${total_reported_count_exc_ws} / ${Exposure} ;;
+    value_format: "0.0%"
+  }
+
+  measure: total_reported_count_exc_ws_ultimate {
+    type: sum
+    sql: total_reported_count_exc_ws_ultimate ;;
+  }
+
+  measure:total_reported_exc_ws_ult_freq {
+    type: number
+    sql: ${total_reported_count_exc_ws_ultimate} / ${Exposure} ;;
+    value_format: "0.0%"
+  }
+
+  measure: Non_Nil_Proportion {
+    type: number
+    sql: ${total_count_exc_ws} / ${total_reported_count_exc_ws}  ;;
+    value_format: "0.0%"
+  }
+
+  measure: Ultimate_Non_Nil_Proportion {
+    type: number
+    sql: ${total_count_exc_ws_ultimate} / ${total_reported_count_exc_ws_ultimate}  ;;
+    value_format: "0.0%"
+  }
+
+
+
+
+  measure: total_incurred_cap50k {
+    type: sum
+    sql: total_incurred_cap50k ;;
+  }
+
+  measure:total_incurred_cap50k_lr {
+    type: number
+    sql: ${total_incurred_cap50k} / ${Earned_Premium} ;;
+    value_format: "0.0%"
+  }
+
+  measure: total_incurred_cap50k_ultimate {
+    type: sum
+    sql: total_incurred_cap50k_ultimate ;;
+  }
+
+  measure:total_incurred_cap50k_ult_lr {
+    type: number
+    sql: ${total_incurred_cap50k_ultimate} / ${Earned_Premium} ;;
+    value_format: "0.0%"
+  }
+
+  measure: total_incurred_50k_1m {
+    type: sum
+    sql: total_inc_50k_1m ;;
+  }
+
+  measure:total_incurred_50k_1m_lr {
+    type: number
+    sql: ${total_incurred_50k_1m} / ${Earned_Premium} ;;
+    value_format: "0.0%"
+  }
 
 
 
