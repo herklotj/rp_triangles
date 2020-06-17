@@ -54,6 +54,8 @@ view: ad_hod_tri {
            pb_incurred,
            other_paid,
            other_incurred,
+           tl_paid,
+           tl_incurred,
            1.00*fee_count as fee_count,
            1.00*veh_count as veh_count,
            1.00*rec_count as rec_count,
@@ -530,7 +532,7 @@ view: ad_hod_tri {
 
   measure: repair_sev {
     type: number
-    sql: sum(repair_incurred)/ sum(veh_count - tl_count) ;;
+    sql: sum(veh_incurred - tl_incurred)/ sum(veh_count - tl_count) ;;
     value_format_name: gbp
   }
 
