@@ -525,4 +525,16 @@ view: ad_hod_tri {
     value_format: "0.0%"
   }
 
+  measure: tl_sev {
+    type: number
+    sql: sum(tl_incurred)/ sum(tl_count) ;;
+    value_format_name: gbp
+  }
+
+  measure: repair_sev {
+    type: number
+    sql: sum(repair_incurred)/ sum(veh_count - tl_count) ;;
+    value_format_name: gbp
+  }
+
   }
