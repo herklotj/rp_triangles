@@ -106,9 +106,6 @@ view: ad_hod_tri {
                   AND clm.dev_month = prem.dev_month
           WHERE prem.acc_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)) a
       LEFT JOIN v_ice_policy_origin po ON a.polnum = po.policy_reference_number
-      LEFT JOIN (SELECT polnum, inevncnt, inception_strategy FROM expoclm) EXP
-             ON a.polnum = exp.polnum
-            AND exp.inevncnt = 1
     WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
              ;;
