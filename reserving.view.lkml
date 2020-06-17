@@ -83,6 +83,31 @@ view: reserving {
 
 
 
+  measure: total_count_exc_ws {
+    type: sum
+    sql: total_count_exc_ws ;;
+  }
+
+  measure:total_exc_ws_freq {
+    type: number
+    sql: ${total_count_exc_ws} / ${Exposure} ;;
+    value_format: "0.0%"
+  }
+
+  measure: total_count_exc_ws_ultimate {
+    type: sum
+    sql: total_count_exc_ws_ultimate ;;
+  }
+
+  measure:total_exc_ws_ult_freq {
+    type: number
+    sql: ${total_count_exc_ws_ultimate} / ${Exposure} ;;
+    value_format: "0.0%"
+  }
+
+
+
+
 
 
 
