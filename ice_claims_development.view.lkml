@@ -164,7 +164,7 @@ FROM (SELECT *,
                      ELSE 0
                    END AS exposure
             FROM (select polnum,scheme,renewseq,inception, min(uw_month) as uw_month, acc_month, sum(earned_premium) as earned_premium, sum(exposure) as exposure, max(inforce) as inforce
-                    from v_ice_prem_earned
+                    from ice_prem_earned
                   group by polnum,scheme,renewseq,inception,acc_month
                   )eprem
               JOIN aauser.calendar b
