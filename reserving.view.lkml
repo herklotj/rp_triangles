@@ -1,19 +1,20 @@
 view: reserving {
   derived_table: {
     sql:
-    select
+
+ select
       ultimates.*
       ,eprem.earned_premium
       ,eprem.exposure
     from
-      v_reserving_dfm_ultimates ultimates
+      reserving_dfm_ultimates ultimates
     left join
       (select
           acc_month
           ,sum(earned_premium) as earned_premium
           ,sum(exposure) as exposure
        from
-          v_ice_prem_earned
+          ice_prem_earned pr
        group by acc_month
        ) eprem
         on eprem.acc_month = ultimates.acc_month
