@@ -110,8 +110,6 @@ view: ice_claims_development {
          WHEN total_incurred > 1000000 THEN 1000000
          ELSE total_incurred
        END AS total_incurred_cap_1m,
-
-
       /*CASE
          WHEN settleddate <= dev_month AND total_reported_count > 0 THEN 1.00
          ELSE 0
@@ -132,13 +130,14 @@ view: ice_claims_development {
          ELSE 0
        END AS all_notifications_exc_ws,
        no_claimants,
-       no_noTPI,
-       no_Non_Contactable,
-       no_Successful_Int,
-       no_Unsuccessful_Int,
-       no_CHire,
-       no_Repairs,
-       no_both_CHire_Repairs
+       tpinterventionrequired,
+       no_sucessful_int,
+       no_unsuccessful_int,
+       no_none_tpi,
+       no_non_contactable,
+       no_both,
+       no_chire,
+       no_repairs
 FROM (SELECT *,
              '2999-01-01' AS settleddate
       FROM (SELECT eprem.polnum,
@@ -163,10 +162,7 @@ FROM (SELECT *,
                      WHEN months_between (b.start_date,eprem.acc_month) = 0 THEN exposure
                      ELSE 0
                    END AS exposure
-            FROM (select polnum,scheme,renewseq,inception, min(uw_month) as uw_month, acc_month, sum(earned_premium) as earned_premium, sum(exposure) as exposure, max(inforce) as inforce
-                    from ice_prem_earned
-                  group by polnum,scheme,renewseq,inception,acc_month
-                  )eprem
+            FROM v_ice_prem_earned eprem
               JOIN aauser.calendar b
                 ON eprem.acc_month <= b.start_date
                AND to_date (SYSDATE-DAY (SYSDATE) + 1) >= b.start_date
@@ -182,39 +178,39 @@ FROM (SELECT *,
               AND clm.policyinception = prem.inception
               AND clm.dev_period = prem.dev_period /* and  clm.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)))*/ /*and prem.inception <= clm.incidentdate and (prem.inception+364) >= clm.incidentdate and prem.acc_month=clm.acc_month and exposure >0 and clm.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)*/
       WHERE prem.acc_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)) a
-  LEFT JOIN (SELECT claim_number,
-                    COUNT(claim_number) AS no_claimants,
-                    COUNT(CASE WHEN TPI_Status = 'No TPI' THEN 1 ELSE NULL END) AS no_noTPI,
-                    COUNT(CASE WHEN TPI_Status = 'Non Contactable' THEN 1 ELSE NULL END) AS no_Non_Contactable,
-                    COUNT(CASE WHEN TPI_Status = 'Successful Intervention' THEN 1 ELSE NULL END) AS no_Successful_Int,
-                    COUNT(CASE WHEN TPI_Status = 'Unsuccessful Intervention' THEN 1 ELSE NULL END) AS no_Unsuccessful_Int,
-                    COUNT(CASE WHEN TPI_Status = 'Unknown' THEN 1 ELSE NULL END) AS no_Unknown,
-                    COUNT(CASE WHEN statusflag = 'CHire' OR statusflag = 'Both' THEN 1 ELSE NULL END) AS no_CHire,
-                    COUNT(CASE WHEN statusflag = 'Repairs' OR statusflag = 'Both' THEN 1 ELSE NULL END) AS no_Repairs,
-                    COUNT(CASE WHEN statusflag = 'Both' THEN 1 ELSE NULL END) AS no_both_CHire_Repairs
-             FROM (SELECT CASE
-                            WHEN tpinterventionrequired = 'No' THEN 'No TPI'
-                            WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Successful' AND (repairsrequired = 'Yes' OR hirevehiclerequired = 'Yes') THEN 'Successful Intervention'
-                            WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Successful' AND (hirevehiclerequired IS NULL OR hirevehiclerequired = 'No') AND (repairsrequired IS NULL OR repairsrequired = 'No') THEN 'Unsuccessful Intervention'
-                            WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Not Successful' THEN 'Non Contactable'
-                            ELSE 'Unknown'
-                          END AS TPI_Status,
-                          CASE
-                            WHEN hirevehiclerequired = 'Yes' AND repairsrequired = 'Yes' THEN 'Both'
-                            WHEN hirevehiclerequired = 'Yes' THEN 'CHire'
-                            WHEN repairsrequired = 'Yes' THEN 'Repairs'
-                            ELSE 'N/A'
-                          END AS StatusFlag,
-                          tpi_int.*
-                   FROM ice_aa_tp_intervention tpi_int) summary
-             GROUP BY claim_number) summary2 ON a.claimnum = summary2.claim_number
+
+LEFT JOIN (SELECT
+  claim_number,
+  count(claim_number) as no_claimants,
+  sum(case when tpinterventionrequired = 'Yes' then 1 else 0 end) as tpinterventionrequired,
+  sum(CASE WHEN tpi_status = 'Successful Intervention' then 1 else 0 end) as no_sucessful_int,
+  sum(CASE WHEN tpi_status = 'Unsuccessful Intervention' then 1 else 0 end) as no_unsuccessful_int,
+  sum(CASE WHEN tpi_status = 'No TPI' then 1 else 0 end) as no_none_tpi,
+  sum(CASE WHEN tpi_status = 'Non Contactable' then 1 else 0 end) as no_non_contactable,
+  sum(CASE WHEN type_of_int = 'Both' then 1 else 0 end) as no_both,
+  sum(CASE WHEN type_of_int = 'CHire' then 1 else 0 end) as no_chire,
+  sum(CASE WHEN type_of_int = 'Repairs' then 1 else 0 end) as no_repairs
+
+  FROM
+
+  (SELECT *,
+  CASE WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Successful' AND (hirevehiclerequired = 'Yes' OR repairsrequired = 'Yes') then 'Successful Intervention'
+  WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Successful' AND (hirevehiclerequired = 'No' OR hirevehiclerequired IS NULL) AND (repairsrequired = 'No' OR repairsrequired IS NULL) then 'Unsuccessful Intervention'
+  WHEN tpinterventionrequired = 'No' then 'No TPI'
+  WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Not Successful' then 'Non Contactable'
+  ELSE 'Unknown' END AS tpi_status,
+  CASE WHEN hirevehiclerequired = 'Yes' AND repairsrequired = 'Yes' then 'Both' WHEN hirevehiclerequired = 'Yes' then 'CHire' WHEN repairsrequired = 'Yes' then 'Repairs' else 'Unknown' end as type_of_int
+  FROM ice_aa_tp_intervention) a
+
+  GROUP BY claim_number) x on a.claimnum = x.claim_number
+
+
   LEFT JOIN v_ice_policy_origin po ON a.polnum = po.policy_reference_number
-  /*LEFT JOIN (SELECT polnum, inevncnt, inception_strategy FROM expoclm) EXP
+
+  LEFT JOIN (SELECT polnum, inevncnt, inception_strategy FROM expoclm) EXP
          ON a.polnum = exp.polnum
-        AND exp.inevncnt = 1*/
+        AND exp.inevncnt = 1
 WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
-
-
          ;;
   }
 
@@ -282,47 +278,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql: ${TABLE}.uw_qtr ;;
   }
 
-  dimension: number_claimants {
-    type: number
-    sql: ${TABLE}.no_claimants ;;
-  }
-
-  dimension: number_noTPI {
-    type: number
-    sql: ${TABLE}.no_noTPI ;;
-  }
-
-  dimension: number_Non_Contactable {
-    type: number
-    sql: ${TABLE}.no_Non_Contactable ;;
-  }
-
-  dimension: number_Successful_Int {
-    type: number
-    sql: ${TABLE}.no_Successful_Int ;;
-  }
-
-  dimension: number_Unsuccessful_Int {
-    type: number
-    sql: ${TABLE}.no_Unsuccessful_Int ;;
-  }
-
-  dimension: number_CHire {
-    type: number
-    sql: ${TABLE}.no_CHire ;;
-  }
-
-  dimension: number_Repairs {
-    type: number
-    sql: ${TABLE}.no_Repairs ;;
-  }
-
-  dimension: number_both_CHire_Repairs {
-    type: number
-    sql: ${TABLE}.no_both_CHire_Repairs ;;
-  }
-
-
   dimension: dev_period_acc_year {
     label: "Development Month Accident Year Basis"
     type: number
@@ -350,7 +305,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   dimension: exclude_large_loss_pols {
     type: string
     sql:case when polnum ='AAPMB0000467125' or polnum ='AAPMB0000340730' or polnum ='AAPMB0000370516' or polnum ='AAPMB0000042813' then 'Large Losses' else 'No Large Losses' end
-              ;;
+      ;;
   }
 
   dimension: tp_inc_acc_band {
@@ -359,7 +314,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     style: integer
     value_format_name: gbp_0
     sql: ${TABLE}.tp_incurred
-   ;;
+      ;;
   }
 
   dimension: ad_inc_acc_band {
@@ -715,7 +670,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.0%"
   }
 
- measure: settled_indicator {
+  measure: settled_indicator {
     type: sum
     sql: settled_indicator;;
     value_format: "0.0%"
@@ -1004,92 +959,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql:  sum(tp_incurred) ;;
   }
 
-  measure: loss_ratio_successful_tpi {
-    type: number
-    sql:  sum ((case when no_successful_int >= 1 then 1 else 0 end) * (tp_incurred)) / ${earned_premium_cumulative};;
-    value_format: "0.00%"
-  }
-
-  measure: loss_ratio_Unsuccessful_tpi {
-    type: number
-    sql:  sum ((case when no_unsuccessful_int >= 1 then 1 else 0 end) * (tp_incurred)) / ${earned_premium_cumulative};;
-    value_format: "0.00%"
-  }
-
-  measure: loss_ratio_non_contactable_tpi {
-    type: number
-    sql:  sum ((case when no_non_contactable >= 1 then 1 else 0 end) * (tp_incurred)) / ${earned_premium_cumulative};;
-    value_format: "0.00%"
-  }
-
-  measure: tp_freq_successful_tpi {
-    type: number
-    sql: sum(case when tp_count = 1 AND no_successful_int >= 1 then 1 else 0 end)/ ${exposure_cumulative} ;;
-    value_format: "0.00%"
-  }
-
-  measure: tp_freq_unsuccessful_tpi {
-    type: number
-    sql: sum(case when tp_count = 1 AND no_unsuccessful_int >= 1 then 1 else 0 end)/ ${exposure_cumulative} ;;
-    value_format: "0.00%"
-  }
-
-  measure: tp_freq_non_contactable_tpi {
-    type: number
-    sql: sum(case when tp_count = 1 AND no_non_contactable >= 1 then 1 else 0 end)/ ${exposure_cumulative} ;;
-    value_format: "0.00%"
-  }
-
-  measure: tp_sev_successful {
-    type: number
-    sql:  sum (case when no_successful_int >=1 then tp_incurred else 0 end) / sum(tp_count) ;;
-
-  }
-
-  measure: tp_sev_unsuccessful {
-    type: number
-    sql:  sum (case when no_unsuccessful_int >=1 then tp_incurred else 0 end) / sum(tp_count) ;;
-
-  }
-
-  measure: tp_sev_non_contactable {
-    type: number
-    sql:  sum (case when no_non_contactable >=1 then tp_incurred else 0 end) / sum(tp_count) ;;
-
-  }
-
-  measure: tpi_success_rate {
-    type: number
-    sql:  sum (case when no_successful_int >=1 then 1 else 0 end) / sum(tp_count) ;;
-    value_format: "0.0%"
-  }
-
-  measure: tpi_unsuccessful_rate {
-    type: number
-    sql:  sum (case when no_unsuccessful_int >=1 then 1 else 0 end) / sum(tp_count) ;;
-    value_format: "0.0%"
-  }
-
-  measure: attempted_tpi_total {
-    type: number
-    sql:  count (case when no_Successful_Int > 0 OR no_unsuccessful_int > 0 OR no_non_contactable > 0 then 1 else null end) ;;
-  }
-
-  measure: attempted_tpi_success {
-    type: number
-    sql:  count (case when no_Successful_Int> 0 then 1 else null end) ;;
-  }
-
-  measure: attempted_tpi_unsuccess {
-    type: number
-    sql:  count (case when no_unsuccessful_int > 0 then 1 else null end) ;;
-  }
-
-  measure: attempted_tpi_noncontactable {
-    type: number
-    sql:  count (case when no_non_contactable > 0 then 1 else null end) ;;
-  }
-
 
   measure: pi_incurred {
     type: number
@@ -1157,10 +1026,117 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   }
 
   measure: recoveries_paid {
-      type: sum
-      sql: ad_paid_rec ;;
+    type: sum
+    sql: ad_paid_rec ;;
 
   }
+
+  measure: loss_ratio_successful_tpi {
+    type: number
+    sql: sum(case when no_sucessful_int >= 1 then tp_incurred else 0 end) / sum(earned_premium_cumulative);;
+    value_format: "0%"
+  }
+
+  measure: loss_ratio_unsuccessful_tpi {
+    type: number
+    sql: sum(case when no_unsuccessful_int >= 1 and no_sucessful_int = 0 then tp_incurred else 0 end) / sum(earned_premium_cumulative);;
+    value_format: "0%"
+  }
+
+  measure: loss_ratio_non_contactable_tpi {
+    type: number
+    sql: sum(case when no_sucessful_int = 0 and no_unsuccessful_int = 0 and no_non_contactable>= 1 then tp_incurred else 0 end) / sum(earned_premium_cumulative);;
+    value_format: "0%"
+  }
+
+  measure: tp_freq_successful_tpi {
+    type: number
+    sql: sum(case when no_sucessful_int >= 1 then tp_count else 0 end)/ ${exposure_cumulative} ;;
+    value_format: "0.0%"
+  }
+
+  measure: tp_freq_unsuccessful_tpi {
+    type: number
+    sql: sum(case when no_unsuccessful_int >= 1 and no_sucessful_int = 0 then tp_count else 0 end)/ ${exposure_cumulative} ;;
+    value_format: "0.0%"
+  }
+
+  measure: tp_freq_non_contactable_tpi {
+    type: number
+    sql: sum(case when no_sucessful_int = 0 and no_unsuccessful_int = 0 and no_non_contactable>= 1 then tp_count else 0 end)/ ${exposure_cumulative} ;;
+    value_format: "0.0%"
+  }
+
+  measure: tp_sev_successful_tpi {
+    type: number
+    sql: sum(case when no_sucessful_int >= 1 then tp_incurred else 0 end) / sum(case when no_sucessful_int >= 1 then tp_count else 0.000000000000000000000001 end)  ;;
+    value_format: "0.0"
+  }
+
+
+  measure: tp_sev_unsuccessful_tpi {
+    type: number
+    sql: sum(case when no_unsuccessful_int >= 1 and no_sucessful_int = 0 then tp_incurred else 0 end) / sum(case when no_unsuccessful_int >= 1 and no_sucessful_int = 0 then tp_count else 0.000000000000000000000001 end) ;;
+    value_format: "0.0"
+  }
+
+  measure: tp_sev_non_contactable_tpi {
+    type: number
+    sql: sum(case when no_sucessful_int = 0 and no_unsuccessful_int = 0 and no_non_contactable>= 1 then tp_incurred else 0 end) / sum(case when no_sucessful_int = 0 and no_unsuccessful_int = 0 and no_non_contactable>= 1 then tp_count else 0.000000000000000000000001 end) ;;
+    value_format: "0.0"
+  }
+
+
+  measure: successful_tpi_rate {
+    type: number
+    sql: sum(case when no_sucessful_int >= 1 then 1 else 0 end) / sum(case when tpinterventionrequired >= 1 then 1 else 0.000000000000000000000001 end)   ;;
+    value_format: "0.0%"
+
+  }
+
+  measure: unsuccessful_tpi_rate {
+    type: number
+    sql: sum(case when no_unsuccessful_int >= 1 and no_sucessful_int = 0 then 1 else 0 end) / sum(case when tpinterventionrequired >= 1 then 1 else 0.000000000000000000000001 end) ;;
+    value_format: "0.0%"
+
+  }
+
+  measure: non_contactable_tpi_rate {
+    type: number
+    sql: sum(case when no_sucessful_int = 0 and no_unsuccessful_int = 0 and no_non_contactable>= 1 then 1 else 0 end) / sum(case when tpinterventionrequired >= 1 then 1 else 0.000000000000000000000001 end) ;;
+    value_format: "0.0%"
+
+  }
+
+  measure: total_require_tpi {
+    type: number
+    sql: sum(case when tpinterventionrequired >= 1 then 1 else 0 end)   ;;
+
+  }
+
+  measure: total_sucessful_tpi {
+    type: number
+    sql: sum(case when no_sucessful_int >= 1 then 1 else 0 end)   ;;
+
+  }
+
+  measure: total_unsucessful_tpi {
+    type: number
+    sql: sum(case when no_unsuccessful_int >= 1 and no_sucessful_int = 0 then 1 else 0 end)   ;;
+
+  }
+
+  measure: total_noncontactable_tpi {
+    type: number
+    sql: sum(case when no_sucessful_int = 0 and no_unsuccessful_int = 0 and no_non_contactable >= 1 then 1 else 0 end)   ;;
+
+  }
+
+
+
+
+
+
 
 
 
