@@ -162,7 +162,22 @@ FROM (SELECT *,
                      WHEN months_between (b.start_date,eprem.acc_month) = 0 THEN exposure
                      ELSE 0
                    END AS exposure
-            FROM v_ice_prem_earned eprem
+            FROM
+              (select
+                          Polnum
+                          ,scheme
+                          ,renewseq
+                          ,inception
+                          , min(uw_month) as uw_month
+                          , acc_month
+                          , sum(earned_premium) as earned_premium
+                          , sum(exposure) as exposure
+                          , max(inforce) as inforce
+                 from ice_prem_earned
+                   group by polnum,scheme,renewseq,inception,acc_month
+               ) eprem
+
+
               JOIN aauser.calendar b
                 ON eprem.acc_month <= b.start_date
                AND to_date (SYSDATE-DAY (SYSDATE) + 1) >= b.start_date
@@ -207,9 +222,9 @@ LEFT JOIN (SELECT
 
   LEFT JOIN v_ice_policy_origin po ON a.polnum = po.policy_reference_number
 
-  LEFT JOIN (SELECT polnum, inevncnt, inception_strategy FROM expoclm) EXP
+  /*LEFT JOIN (SELECT polnum, inevncnt, inception_strategy FROM expoclm) EXP
          ON a.polnum = exp.polnum
-        AND exp.inevncnt = 1
+        AND exp.inevncnt = 1*/
 WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
          ;;
   }

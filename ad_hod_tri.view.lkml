@@ -56,6 +56,8 @@ view: ad_hod_tri {
            other_incurred,
            tl_paid,
            tl_incurred,
+           salvage_paid,
+           salvage_incurred,
            1.00*fee_count as fee_count,
            1.00*veh_count as veh_count,
            1.00*rec_count as rec_count,
@@ -66,6 +68,7 @@ view: ad_hod_tri {
            1.00*other_count as other_count,
            1.00*tl_count as tl_count,
            1.00*repair_count as repair_count,
+           1.00*salvage_count as salvage_count,
            po.inception_strategy
     FROM (SELECT *,
                  '2999-01-01' AS settleddate
@@ -533,6 +536,35 @@ view: ad_hod_tri {
   measure: repair_sev {
     type: number
     sql: sum(veh_incurred - tl_incurred)/ sum(veh_count - tl_count) ;;
+    value_format_name: gbp
+  }
+
+  measure: salvage_count {
+    type: sum
+    sql: salvage_count;;
+  }
+
+  measure: salvage_freq {
+    type: number
+    sql: sum(salvage_count)/ ${exposure_cumulative} ;;
+    value_format: "0.0%"
+  }
+
+  measure: salvage_sev {
+    type: number
+    sql: sum(-1*salvage_incurred)/ sum(salvage_count) ;;
+    value_format_name: gbp
+  }
+
+  measure: salvage_proportion {
+    type: number
+    sql: sum(salvage_count)/ sum(ad_count) ;;
+    value_format: "0.0%"
+  }
+
+  measure: salvage_paid_sev {
+    type: number
+    sql: sum(-1*salvage_paid)/ sum(hire_count) ;;
     value_format_name: gbp
   }
 
