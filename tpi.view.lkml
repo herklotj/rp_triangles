@@ -87,12 +87,17 @@ view: tpi {
 
   }
 
-  measure: total_unknown_tpi {
+  measure: total_no_intervention_required {
     type: number
-    sql: sum(case when no_sucessful_int = 0 and no_unsuccessful_int = 0 and no_non_contactable = 0 and no_unknown >= 1 then 1 else 0 end)   ;;
+    sql: sum(case when no_sucessful_int = 0 and no_unsuccessful_int = 0 and no_non_contactable = 0 and no_none_tpi >= 1 then 1 else 0 end)   ;;
 
   }
 
+  measure: total_unknown_tpi {
+    type: number
+    sql: sum(case when no_sucessful_int = 0 and no_unsuccessful_int = 0 and no_non_contactable = 0 and no_none_tpi = 0 then 1 else 0 end)   ;;
+
+  }
 
 
 
