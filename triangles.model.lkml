@@ -16,3 +16,4 @@ explore: ice_claims_development {}
 explore: ad_hod_tri {}
 explore: reserving {}
 explore: reserving_uwyr_allocation {}
+explore: tpi {}
