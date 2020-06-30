@@ -5,7 +5,7 @@ view: tpi {
   SELECT
   claim_number,
   count(claim_number) as no_claimants,
-  sum(case when tpinterventionrequired = 'Yes' then 1 else 0 end) as tpinterventionrequired,
+  sum(case when tpinterventionrequired = 'Yes' and contactsuccess IN ('Successful', 'Not Successful') then 1 else 0 end) as tpinterventionrequired,
   sum(CASE WHEN tpi_status = 'Successful Intervention' then 1 else 0 end) as no_sucessful_int,
   sum(CASE WHEN tpi_status = 'Unsuccessful Intervention' then 1 else 0 end) as no_unsuccessful_int,
   sum(CASE WHEN tpi_status = 'Unknown' then 1 else 0 end) as no_unknown,
