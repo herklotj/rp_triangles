@@ -707,6 +707,12 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   }
 
+  measure: ad_bc {
+    type: number
+    sql: sum(ad_incurred)/ ${exposure_cumulative} ;;
+
+  }
+
   measure: ad_settled_sev {
     type: number
     sql: sum(case when AD_Settled_Indicator =1 then ad_incurred else 0 end) / sum(case when AD_Settled_Indicator =1 then ad_count else 0.0000000000000001 end) ;;
