@@ -421,7 +421,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     type: number
     sql: ${total_incurred} / ${earned_premium_cumulative};;
     description: "Loss Ratio"
-    value_format: "0.0000%"
+    value_format: "0.0%"
   }
 
   measure: loss_ratio_ex_cumulative {
@@ -689,6 +689,18 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     type: sum
     sql: settled_indicator;;
     value_format: "0.0%"
+  }
+
+  measure: tp_chire_loss_ratio {
+    type: number
+    sql: sum(tp_chire_incurred)/sum(earned_premium_cumulative);;
+    value_format: "0%"
+  }
+
+  measure: tp_chire_freq {
+    type: number
+    sql: sum(tp_chire_count)/ ${exposure_cumulative} ;;
+    value_format: "0.00%"
   }
 
 
