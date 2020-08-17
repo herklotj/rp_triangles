@@ -187,7 +187,7 @@ FROM (SELECT *,
                     AND eprem.inception <= d.end_date
                     AND d.scheme = eprem.scheme
               LEFT JOIN aauser.calendar e ON eprem.uw_month = e.start_date) prem
-        LEFT JOIN v_ice_claims_cumulative clm
+        LEFT JOIN ice_claims_cumulative clm
                ON prem.polnum = clm.polnum
               AND prem.acc_month = clm.acc_month
               AND clm.policyinception = prem.inception
