@@ -453,7 +453,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     type: number
     sql: ${total_incurred_cap_50k} / nullif(${earned_premium_cumulative},0);;
     description: "Loss Ratio Cap 50k"
-    value_format: "0%"
+    value_format: "0.0%"
   }
 
   measure: loss_ratio_cap_1m {
@@ -514,7 +514,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: ws_loss_ratio {
     type: number
     sql: sum(ws_incurred)/sum(earned_premium_cumulative);;
-    value_format: "0%"
+    value_format: "0.0%"
   }
   measure: reported_count_ex_ws {
     type: sum
@@ -670,7 +670,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: ot_freq {
     type: number
     sql: sum(ot_count)/ ${exposure_cumulative} ;;
-    value_format: "0.0%"
+    value_format: "0.00%"
   }
 
   measure: ws_freq {
