@@ -793,42 +793,42 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: settled_proporition {
     type: number
-    sql: ${settled_indicator} / ${reported_count}  ;;
+    sql: ${settled_indicator} / nullif(${reported_count},0)  ;;
     description: "Settled Proportion"
     value_format: "0%"
   }
 
   measure: AD_settled_proporition {
     type: number
-    sql: sum(ad_settled_indicator) / sum(ad_count)  ;;
+    sql: sum(ad_settled_indicator) / nullif(sum(ad_count),0)  ;;
     description: "Settled Proportion"
     value_format: "0%"
   }
 
   measure: TP_settled_proporition {
     type: number
-    sql: sum(tp_settled_indicator) / sum(tp_count)  ;;
+    sql: sum(tp_settled_indicator) / nullif(sum(tp_count),0)  ;;
     description: "Settled Proportion"
     value_format: "0%"
   }
 
   measure: PI_settled_proporition {
     type: number
-    sql: sum(pi_settled_indicator) / sum(pi_count)  ;;
+    sql: sum(pi_settled_indicator) / nullif(sum(pi_count),0)  ;;
     description: "Settled Proportion"
     value_format: "0%"
   }
 
   measure: OT_settled_proporition {
     type: number
-    sql: sum(ot_settled_indicator) / sum(ot_count)  ;;
+    sql: sum(ot_settled_indicator) / nullif(sum(ot_count),0)  ;;
     description: "Settled Proportion"
     value_format: "0%"
   }
 
   measure: ws_settled_proporition {
     type: number
-    sql: sum(ws_settled_indicator) / sum(ws_count)  ;;
+    sql: sum(ws_settled_indicator) / nullif(sum(ws_count),0)  ;;
     description: "Settled Proportion"
     value_format: "0%"
   }
