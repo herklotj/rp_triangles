@@ -948,13 +948,13 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: ad_non_nil_pct {
     type: number
-    sql: sum(ad_count)/sum(total_reported_count_exc_ws);;
+    sql: sum(ad_count)/${nonnil_count_exc_ws};;
 
   }
 
   measure: tp_pct {
     type: number
-    sql: sum(tp_count)/sum(total_reported_count_exc_ws);;
+    sql: sum(tp_count)/${nonnil_count_exc_ws};;
 
   }
 
@@ -966,7 +966,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: pi_pct {
     type: number
-    sql: sum(pi_count)/sum(total_reported_count_exc_ws);;
+    sql: sum(pi_count)/${nonnil_count_exc_ws};;
 
   }
 
