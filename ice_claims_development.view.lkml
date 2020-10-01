@@ -90,9 +90,11 @@ view: ice_claims_development {
        1.00 *pi_incurred AS pi_incurred,
        1.00 *pi_paid AS pi_paid,
        1.00 *ot_incurred AS ot_incurred,
-       1.00 *pi_paid AS ot_paid,
+       1.00 *ot_paid AS ot_paid,
        1.00 *ws_incurred AS ws_incurred,
        1.00 *ws_paid AS ws_paid,
+       1.00*capped_pi_indexed_incurred AS capped_pi_indexed_incurred,
+       1.00*capped_pi_indexed_paid AS capped_pi_indexed_paid,
        ad_paid + tp_paid + pi_paid + ot_paid + ws_paid + large_pi_paid AS total_paid,
        total_incurred AS total_incurred,
        large_pi_incurred AS large_pi_incurred,
@@ -356,6 +358,11 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
             case when ${TABLE}.tp_std_reserve = 0 then 'IR'
             else 'SIR' end
           else 'No TP' end;;
+  }
+
+  dimension: capped_pi_indexed_incurred_dim {
+    type:  number
+    sql: capped_pi_indexed_incurred ;;
   }
 
   dimension: FNOL_Cause_Code {
@@ -1011,6 +1018,16 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: pi_xs_incurred_cap1m {
     type: number
     sql:  sum(case when (pi_incurred+large_pi_incurred) > 1000000 then 975000 else (large_pi_incurred) end) ;;
+  }
+
+  measure: capped_pi_indexed_incurred {
+    type:  number
+    sql: avg(capped_pi_indexed_incurred) ;;
+  }
+
+  measure: capped_pi_indexed_paid {
+    type:  number
+    sql:avg(capped_pi_indexed_paid) ;;
   }
 
   measure: ot_incurred {
