@@ -1022,7 +1022,12 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: capped_pi_indexed_incurred {
     type:  number
-    sql: avg(capped_pi_indexed_incurred) ;;
+    sql: avg(CASE WHEN capped_pi_indexed_incurred > 0 THEN capped_pi_indexed_incurred END) ;;
+  }
+
+  measure:capped_pi_indexed_freq{
+    type: number
+    sql: sum(case when capped_pi_indexed_incurred > 0 THEN 1 ELSE 0 END)/${exposure_cumulative} ;;
   }
 
   measure: capped_pi_indexed_paid {
