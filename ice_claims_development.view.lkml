@@ -119,6 +119,7 @@ view: ice_claims_development {
       CASE WHEN total_incurred = total_paid and total_count =1 then 1 else 0 end as Settled_Indicator,
       CASE WHEN ad_incurred = ad_paid and ad_count =1 then 1 else 0 end as AD_Settled_Indicator,
       CASE WHEN tp_incurred = tp_paid and tp_count =1 then 1 else 0 end as TP_Settled_Indicator,
+      CASE WHEN tp_chire_incurred = tp_chire_paid and tp_chire_count =1 then 1 else 0 end as TP_CHire_Settled_Indicator,
       CASE WHEN pi_incurred = pi_paid and pi_count =1 then 1 else 0 end as PI_Settled_Indicator,
       CASE WHEN ot_incurred = ad_paid and ot_count =1 then 1 else 0 end as OT_Settled_Indicator,
       CASE WHEN ws_incurred = ad_paid and ws_count =1 then 1 else 0 end as WS_Settled_Indicator,
@@ -758,7 +759,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: tp_chire_settled_sev {
     type: number
-    sql: sum(case when settled_indicator =1 then tp_chire_incurred else 0 end) / sum(case when settled_indicator =1 then tp_chire_count else 0.0000000000000001 end) ;;
+    sql: sum(case when TP_CHire_Settled_Indicator =1 then tp_chire_incurred else 0 end) / sum(case when TP_CHire_Settled_Indicator =1 then tp_chire_count else 0.0000000000000001 end) ;;
 
   }
 
@@ -815,6 +816,13 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: TP_settled_proporition {
     type: number
     sql: sum(tp_settled_indicator) / nullif(sum(tp_count),0)  ;;
+    description: "Settled Proportion"
+    value_format: "0%"
+  }
+
+  measure: TP_CHire_settled_proporition {
+    type: number
+    sql: sum(TP_CHire_Settled_Indicator) / nullif(sum(tp_chire_count),0)  ;;
     description: "Settled Proportion"
     value_format: "0%"
   }
