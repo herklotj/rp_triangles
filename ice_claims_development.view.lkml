@@ -55,6 +55,7 @@ view: ice_claims_development {
          ELSE 0
        END AS ad_collared_count,
        ad_paid - ad_paid_exc_rec AS ad_paid_rec,
+      ad_paid_exc_rec,
        CASE
          WHEN ROUND(ROUND(tp_incurred,2) - FLOOR(tp_incurred),2) = 0.81 THEN 1
          ELSE 0
@@ -477,6 +478,24 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0%"
   }
 
+  measure: ad_paid_loss_ratio {
+    type: number
+    sql: sum(ad_paid)/sum(earned_premium_cumulative);;
+    value_format: "0%"
+  }
+
+  measure: ad_paid_ex_rec_loss_ratio {
+    type: number
+    sql: sum(ad_paid_exc_rec)/sum(earned_premium_cumulative);;
+    value_format: "0%"
+  }
+
+  measure: ad_paid_rec_loss_ratio {
+    type: number
+    sql: sum(ad_paid_rec)/sum(earned_premium_cumulative);;
+    value_format: "0%"
+  }
+
   measure: tp_loss_ratio {
     type: number
     sql: sum(tp_incurred)/sum(earned_premium_cumulative);;
@@ -724,6 +743,12 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: ad_sev {
     type: number
     sql: sum(ad_incurred)/ sum(ad_count) ;;
+
+  }
+
+  measure: ad_paid_sev {
+    type: number
+    sql: sum(ad_paid)/ sum(ad_count) ;;
 
   }
 
