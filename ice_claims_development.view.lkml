@@ -748,7 +748,14 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: ad_paid_sev {
     type: number
-    sql: sum(ad_paid)/ sum(ad_count) ;;
+    sql: sum(ad_paid)/ nullif(sum(ad_count),0) ;;
+
+  }
+
+
+  measure: ad_ex_rec_paid_sev {
+    type: number
+    sql: sum(ad_paid_exc_rec)/ nullif(sum(ad_count),0) ;;
 
   }
 
