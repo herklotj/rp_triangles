@@ -286,6 +286,12 @@ view: ad_hod_tri {
     value_format: "0.0%"
   }
 
+  measure: fee_sev {
+    type: number
+    sql: sum(fee_incurred)/ sum(fee_count) ;;
+    value_format_name: gbp
+  }
+
   measure: veh_count {
     type: sum
     sql: veh_count;;
