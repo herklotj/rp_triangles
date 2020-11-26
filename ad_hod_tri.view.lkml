@@ -257,6 +257,12 @@ view: ad_hod_tri {
     value_format_name: gbp
   }
 
+  measure: ad_sev_exc_fees {
+    type: number
+    sql: sum(ad_incurred - fee_incurred)/ sum(ad_count) ;;
+    value_format_name: gbp
+  }
+
   measure: ad_incurred {
     type: number
     sql:  sum(ad_incurred) ;;
@@ -283,6 +289,18 @@ view: ad_hod_tri {
   measure: fee_freq {
     type: number
     sql: sum(fee_count)/ ${exposure_cumulative} ;;
+    value_format: "0.0%"
+  }
+
+  measure: only_fee_no_ad_freq {
+    type: number
+    sql: sum(case when ad_count = 0 then fee_count else 0 end)/ ${exposure_cumulative} ;;
+    value_format: "0.0%"
+  }
+
+  measure: fee_with_ad_freq {
+    type: number
+    sql: sum(case when ad_count = 1 then fee_count else 0 end)/ ${exposure_cumulative} ;;
     value_format: "0.0%"
   }
 
