@@ -288,7 +288,7 @@ view: ad_hod_tri {
 
   measure: veh_count {
     type: sum
-    sql: fee_count;;
+    sql: veh_count;;
   }
 
   measure: veh_freq {
@@ -338,7 +338,7 @@ view: ad_hod_tri {
 
   measure: rec_count {
     type: sum
-    sql: fee_count;;
+    sql: rec_count;;
   }
 
   measure: rec_freq {
