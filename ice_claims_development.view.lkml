@@ -737,7 +737,17 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.0%"
   }
 
+  measure: tp_exc_chire_loss_ratio {
+    type: number
+    sql: sum(tp_incurred - tp_chire_incurred)/sum(earned_premium_cumulative);;
+    value_format: "0%"
+  }
 
+  measure: chire_cost_prop_tp_cost {
+    type: number
+    sql: sum(tp_chire_incurred)/sum(tp_incurred);;
+    value_format: "0%"
+  }
 
 
   measure: ad_sev {
