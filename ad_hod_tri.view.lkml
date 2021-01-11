@@ -2,116 +2,122 @@ view: ad_hod_tri {
   derived_table: {
     sql:
        SELECT a.polnum,
-           scheme,
-           a.renewseq,
-           inception,
-           uw_month,
-           uw_year,
-           uw_qtr,
-           to_timestamp(acc_month) AS acc_month,
-           acc_year,
-           acc_qtr,
-           dev_month,
-           CASE
-             WHEN dev_period > 0 THEN 0
-             ELSE earned_premium
-           END AS earned_premium,
-           earned_premium_cumulative,
-           CASE
-             WHEN dev_period > 0 THEN 0
-             ELSE exposure
-           END AS exposure,
-           exposure_cumulative,
-           incident_date,
-           CASE
-             WHEN dev_period > 0 THEN dev_period
-             ELSE 0
-           END AS dev_period_acc_month,
-           CASE
-             WHEN dev_period > 0 THEN dev_month
-             ELSE acc_month
-           END AS dev_month,
-           months_between(dev_month,acc_year) AS dev_period_acc_year,
-           months_between(dev_month,acc_qtr) AS dev_period_acc_qtr,
-           months_between(dev_month +day(uw_year) -1,uw_year) AS dev_period_uw_year,
-           months_between(dev_month,uw_qtr) AS dev_period_uw_qtr,
-           1.00*AD_count as AD_count,
-           total_incurred AS ad_incurred,
-           total_paid AS ad_paid,
-           fee_paid,
-           fee_incurred,
-           veh_paid,
-           veh_incurred,
-           rec_paid,
-           rec_incurred,
-           hire_paid,
-           hire_incurred,
-           store_paid,
-           store_incurred,
-           ccs_paid,
-           ccs_incurred,
-           pb_paid,
-           pb_incurred,
-           other_paid,
-           other_incurred,
-           tl_paid,
-           tl_incurred,
-           salvage_paid,
-           salvage_incurred,
-           1.00*fee_count as fee_count,
-           1.00*veh_count as veh_count,
-           1.00*rec_count as rec_count,
-           1.00*hire_count as hire_count,
-           1.00*store_count as store_count,
-           1.00*ccs_count as ccs_count,
-           1.00*pb_count as pb_count,
-           1.00*other_count as other_count,
-           1.00*tl_count as tl_count,
-           1.00*repair_count as repair_count,
-           1.00*salvage_count as salvage_count,
-           po.inception_strategy
-    FROM (SELECT *,
-                 '2999-01-01' AS settleddate
-          FROM (SELECT eprem.polnum,
-                       eprem.scheme,
-                       eprem.renewseq,
-                       eprem.inception,
-                       eprem.uw_month,
-                       eprem.acc_month,
-                       d.start_date AS uw_year,
-                       timestampadd(MONTH,-1,c.fy_start_date) AS acc_year,
-                       c.fy_quarter_start_date AS acc_qtr,
-                       e.fy_quarter_start_date AS uw_qtr,
-                       b.start_date AS dev_month,
-                       months_between(b.start_date,eprem.acc_month) AS dev_period,
-                       CASE
-                         WHEN months_between (b.start_date,eprem.acc_month) = 0 THEN earned_premium
-                         ELSE 0
-                       END AS earned_premium,
-                       earned_premium AS earned_premium_cumulative,
-                       exposure AS exposure_cumulative,
-                       CASE
-                         WHEN months_between (b.start_date,eprem.acc_month) = 0 THEN exposure
-                         ELSE 0
-                       END AS exposure
-                FROM v_ice_prem_earned eprem
-                  JOIN aauser.calendar b
-                    ON eprem.acc_month <= b.start_date
-                   AND to_date (SYSDATE-DAY (SYSDATE) + 1) >= b.start_date
-                  LEFT JOIN aauser.calendar c ON eprem.acc_month = c.start_date
-                  LEFT JOIN aapricing.uw_years d
-                         ON eprem.inception >= d.start_date
-                        AND eprem.inception <= d.end_date
-                        AND d.scheme = eprem.scheme
-                  LEFT JOIN aauser.calendar e ON eprem.uw_month = e.start_date) prem
-            LEFT JOIN v_ad_hod_tri clm
-                   ON prem.polnum = clm.polnum
-                  AND prem.acc_month = clm.acc_month
-                  AND clm.inception = prem.inception
-                  AND clm.dev_month = prem.dev_month
-          WHERE prem.acc_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)) a
-      LEFT JOIN v_ice_policy_origin po ON a.polnum = po.policy_reference_number
-    WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
+      a.claim_number,
+       scheme,
+       a.renewseq,
+       inception,
+       uw_month,
+       uw_year,
+       uw_qtr,
+       to_timestamp(acc_month) AS acc_month,
+       acc_year,
+       acc_qtr,
+       dev_month,
+       CASE
+         WHEN dev_period > 0 THEN 0
+         ELSE earned_premium
+       END AS earned_premium,
+       earned_premium_cumulative,
+       CASE
+         WHEN dev_period > 0 THEN 0
+         ELSE exposure
+       END AS exposure,
+       exposure_cumulative,
+       incident_date,
+       CASE
+         WHEN dev_period > 0 THEN dev_period
+         ELSE 0
+       END AS dev_period_acc_month,
+       CASE
+         WHEN dev_period > 0 THEN dev_month
+         ELSE acc_month
+       END AS dev_month,
+       months_between(dev_month,acc_year) AS dev_period_acc_year,
+       months_between(dev_month,acc_qtr) AS dev_period_acc_qtr,
+       months_between(dev_month +day(uw_year) -1,uw_year) AS dev_period_uw_year,
+       months_between(dev_month,uw_qtr) AS dev_period_uw_qtr,
+       1.00 *AD_count AS AD_count,
+       total_incurred AS ad_incurred,
+       total_paid AS ad_paid,
+       fee_paid,
+       fee_incurred,
+       veh_paid,
+       veh_incurred,
+       rec_paid,
+       rec_incurred,
+       hire_paid,
+       hire_incurred,
+       store_paid,
+       store_incurred,
+       ccs_paid,
+       ccs_incurred,
+       pb_paid,
+       pb_incurred,
+       other_paid,
+       other_incurred,
+       tl_paid,
+       tl_incurred,
+       salvage_paid,
+       salvage_incurred,
+       1.00 *fee_count AS fee_count,
+       1.00 *veh_count AS veh_count,
+       1.00 *rec_count AS rec_count,
+       1.00 *hire_count AS hire_count,
+       1.00 *store_count AS store_count,
+       1.00 *ccs_count AS ccs_count,
+       1.00 *pb_count AS pb_count,
+       1.00 *other_count AS other_count,
+       1.00 *tl_count AS tl_count,
+       1.00 *repair_count AS repair_count,
+       1.00 *salvage_count AS salvage_count,
+       po.inception_strategy,
+       liability_decision
+FROM (SELECT *,
+             '2999-01-01' AS settleddate
+      FROM (SELECT eprem.polnum,
+                   eprem.scheme,
+                   eprem.renewseq,
+                   eprem.inception,
+                   eprem.uw_month,
+                   eprem.acc_month,
+                   d.start_date AS uw_year,
+                   timestampadd(MONTH,-1,c.fy_start_date) AS acc_year,
+                   c.fy_quarter_start_date AS acc_qtr,
+                   e.fy_quarter_start_date AS uw_qtr,
+                   b.start_date AS dev_month,
+                   months_between(b.start_date,eprem.acc_month) AS dev_period,
+                   CASE
+                     WHEN months_between (b.start_date,eprem.acc_month) = 0 THEN earned_premium
+                     ELSE 0
+                   END AS earned_premium,
+                   earned_premium AS earned_premium_cumulative,
+                   exposure AS exposure_cumulative,
+                   CASE
+                     WHEN months_between (b.start_date,eprem.acc_month) = 0 THEN exposure
+                     ELSE 0
+                   END AS exposure
+            FROM v_ice_prem_earned eprem
+              JOIN aauser.calendar b
+                ON eprem.acc_month <= b.start_date
+               AND to_date (SYSDATE-DAY (SYSDATE) + 1) >= b.start_date
+              LEFT JOIN aauser.calendar c ON eprem.acc_month = c.start_date
+              LEFT JOIN aapricing.uw_years d
+                     ON eprem.inception >= d.start_date
+                    AND eprem.inception <= d.end_date
+                    AND d.scheme = eprem.scheme
+              LEFT JOIN aauser.calendar e ON eprem.uw_month = e.start_date) prem
+        LEFT JOIN v_ad_hod_tri clm
+               ON prem.polnum = clm.polnum
+              AND prem.acc_month = clm.acc_month
+              AND clm.inception = prem.inception
+              AND clm.dev_month = prem.dev_month
+        LEFT JOIN (SELECT claim_number,
+                          liability_decision
+                   FROM ice_dim_claim
+                   WHERE current_flag = 'Y') lib ON clm.claimnum = lib.claim_number
+      WHERE prem.acc_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)) a
+  LEFT JOIN v_ice_policy_origin po ON a.polnum = po.policy_reference_number
+WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
              ;;
    }
@@ -129,6 +135,11 @@ view: ad_hod_tri {
   dimension: strategy {
     type: string
     sql: ${TABLE}.inception_strategy ;;
+  }
+
+  dimension: liability_decision {
+    type: string
+    sql: ${TABLE}.liability_decision ;;
   }
 
   dimension_group: accident_month {
@@ -168,7 +179,7 @@ view: ad_hod_tri {
     timeframes: [
       fiscal_quarter
     ]
-    sql: ${TABLE}.acc_qtr ;;
+    sql: CAST(${TABLE}.acc_qtr AS TIMESTAMP WITHOUT TIME ZONE) ;;
   }
 
   dimension_group: uw_qtr {
@@ -176,7 +187,13 @@ view: ad_hod_tri {
     timeframes: [
       fiscal_quarter
     ]
-    sql: ${TABLE}.uw_qtr ;;
+    sql: CAST(${TABLE}.uw_qtr AS TIMESTAMP WITHOUT TIME ZONE) ;;
+  }
+
+  dimension: claim_number {
+    label: "Claim Number"
+    type: string
+    sql: ${TABLE}.claim_number ;;
   }
 
   dimension: dev_period_acc_year {
@@ -559,9 +576,10 @@ view: ad_hod_tri {
 
   measure: repair_sev {
     type: number
-    sql: sum(veh_incurred - tl_incurred)/ sum(veh_count - tl_count) ;;
+    sql:  CASE WHEN sum(veh_count - tl_count) = 0 then 0 else sum(veh_incurred - tl_incurred)/ sum(veh_count - tl_count) end;;
     value_format_name: gbp
   }
+
 
   measure: salvage_count {
     type: sum
