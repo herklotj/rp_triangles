@@ -643,34 +643,31 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql: sum(ws_incurred)/sum(earned_premium_cumulative);;
     value_format: "0.0%"
   }
+
   measure: reported_count_ex_ws {
     type: sum
     sql: total_reported_count_exc_ws;;
     description: "Reported Count Ex WS"
-
   }
 
   measure: reported_count {
     type: sum
     sql: total_reported_count;;
-
   }
 
   measure: ad_count {
     type: sum
     sql: ad_count;;
-
   }
+
   measure: tp_count {
     type: sum
     sql: tp_count;;
-
   }
 
   measure: tp_std_res_count {
     type: sum
     sql:  TP_Std_Reserve;;
-
   }
 
   measure: tp_std_res_proportion {
@@ -694,7 +691,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: ad_std_res_count {
     type: sum
     sql:  AD_Std_Reserve;;
-
   }
 
   measure: reported_freq_ex_ws {
@@ -822,7 +818,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.00%"
   }
 
-
   measure: tp_with_Chire {
     type: number
     sql: sum(TP_Chire_Count)/nullif(sum(tp_count),0) ;;
@@ -841,96 +836,79 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0%"
   }
 
-
   measure: ad_sev {
     type: number
     sql: sum(ad_incurred)/ sum(ad_count) ;;
-
   }
 
   measure: ad_paid_sev {
     type: number
     sql: sum(ad_paid)/ nullif(sum(ad_count),0) ;;
-
   }
-
 
   measure: ad_ex_rec_paid_sev {
     type: number
     sql: sum(ad_paid_exc_rec)/ nullif(sum(ad_count),0) ;;
-
   }
 
   measure: ad_bc {
     type: number
     sql: sum(ad_incurred)/ ${exposure_cumulative} ;;
-
   }
 
   measure: ad_settled_sev {
     type: number
     sql: sum(case when AD_Settled_Indicator =1 then ad_incurred else 0 end) / sum(case when AD_Settled_Indicator =1 then ad_count else 0.0000000000000001 end) ;;
-
   }
 
   measure: tp_sev {
     type: number
     sql: case when sum(tp_count) = 0 then 0 else sum(tp_incurred)/ sum(tp_count) end ;;
-
   }
 
   measure: tp_chire_sev {
     type: number
     sql: case when sum(tp_chire_count) = 0 then 0 else sum(tp_chire_incurred)/ sum(tp_chire_count) end ;;
-
   }
 
   measure: tp_settled_sev {
     type: number
     sql: sum(case when tp_settled_indicator =1 then tp_incurred else 0 end) / sum(case when tp_settled_indicator =1 then tp_count else 0.0000000000000001 end) ;;
-
   }
 
   measure: tp_chire_settled_sev {
     type: number
     sql: sum(case when TP_CHire_Settled_Indicator =1 then tp_chire_incurred else 0 end) / sum(case when TP_CHire_Settled_Indicator =1 then tp_chire_count else 0.0000000000000001 end) ;;
-
   }
 
   measure: pi_sev {
     type: number
     sql: case when sum(pi_count) = 0 then 0 else sum(pi_incurred)/ sum(pi_count) end;;
-
   }
 
   measure: pi_settled_sev {
     type: number
     sql: sum(case when pi_settled_indicator =1 then pi_incurred else 0 end) / sum(case when pi_settled_indicator =1 then pi_count else 0.0000000000000001 end) ;;
-
   }
 
   measure: ot_sev {
     type: number
     sql: case when sum(ot_count) = 0 then 0 else sum(ot_incurred)/ sum(ot_count) end;;
-
   }
 
   measure: ot_settled_sev {
     type: number
     sql: sum(case when ot_settled_indicator =1 then ot_incurred else 0 end) / sum(case when ot_settled_indicator =1 then ot_count else 0.0000000000000001 end) ;;
-
   }
 
   measure: ws_sev {
     type: number
     sql: case when sum(ws_count) = 0 then 0 else sum(ws_incurred)/ sum(ws_count) end ;;
-
   }
 
   measure: ws_settled_sev {
     type: number
     sql: sum(case when ws_settled_indicator =1 then ws_incurred else 0 end) / sum(case when ws_settled_indicator =1 then ws_count else 0.0000000000000001 end) ;;
-
   }
 
   measure: settled_proporition {
@@ -1040,8 +1018,8 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: average_paid {
     type: average
     sql: total_paid;;
-
   }
+
   measure: paid_proportion {
     type: number
     sql: ${total_paid}/${total_incurred};;
@@ -1050,57 +1028,46 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: ad_paid_proportion {
     type: number
     sql: sum(ad_paid)/sum(ad_incurred);;
-
   }
 
   measure: ad_paid_proportion_ex_recs {
     type: number
     sql: sum(ad_paid-ad_paid_rec)/sum(ad_incurred-ad_incurred_recoveries);;
-
   }
-
 
   measure: ad_paid_recovery_proportion {
     type: number
     sql: sum(-ad_paid_rec)/sum(-ad_incurred_recoveries);;
-
   }
 
   measure: tp_paid_proportion {
     type: number
     sql: case when sum(tp_incurred) > 0 then sum(tp_paid)/sum(tp_incurred) else 0 end;;
-
   }
-
 
   measure: pi_paid_proportion_ex_large {
     type: number
     sql: case when sum(pi_incurred) > 0 then sum(pi_paid)/sum(pi_incurred) else 0 end;;
-
   }
 
   measure: ad_non_nil_pct {
     type: number
     sql: sum(ad_count)/${nonnil_count_exc_ws};;
-
   }
 
   measure: tp_pct {
     type: number
     sql: sum(tp_count)/${nonnil_count_exc_ws};;
-
   }
 
   measure: tp_chirepct {
     type: number
     sql: sum(tp_chire_count)/sum(total_reported_count_exc_ws);;
-
   }
 
   measure: pi_pct {
     type: number
     sql: sum(pi_count)/${nonnil_count_exc_ws};;
-
   }
 
   measure: tp_ad_count_ratio {
@@ -1112,7 +1079,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: pi_tp_count_ratio {
     type: number
     sql: sum(pi_count)/nullif(sum(tp_count),0);;
-
   }
 
   measure: loss_ratio_successful_tpi {
@@ -1157,7 +1123,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.0"
   }
 
-
   measure: tp_sev_unsuccessful_tpi {
     type: number
     sql: sum(case when no_unsuccessful_int >= 1 and no_sucessful_int = 0 then tp_incurred else 0 end) / sum(case when no_unsuccessful_int >= 1 and no_sucessful_int = 0 then tp_count else 0.000000000000000000000001 end) ;;
@@ -1170,56 +1135,53 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.0"
   }
 
-
   measure: successful_tpi_rate {
     type: number
     sql: sum(case when no_sucessful_int >= 1 then 1 else 0 end) / sum(case when tpinterventionrequired >= 1 then 1 else 0.000000000000000000000001 end)   ;;
     value_format: "0.0%"
-
   }
 
   measure: unsuccessful_tpi_rate {
     type: number
     sql: sum(case when no_unsuccessful_int >= 1 and no_sucessful_int = 0 then 1 else 0 end) / sum(case when tpinterventionrequired >= 1 then 1 else 0.000000000000000000000001 end) ;;
     value_format: "0.0%"
-
   }
 
   measure: non_contactable_tpi_rate {
     type: number
     sql: sum(case when no_sucessful_int = 0 and no_unsuccessful_int = 0 and no_non_contactable>= 1 then 1 else 0 end) / sum(case when tpinterventionrequired >= 1 then 1 else 0.000000000000000000000001 end) ;;
     value_format: "0.0%"
-
   }
 
   measure: total_require_tpi {
     type: number
     sql: sum(case when tpinterventionrequired >= 1 then 1 else 0 end)   ;;
-
   }
 
   measure: total_sucessful_tpi {
     type: number
     sql: sum(case when no_sucessful_int >= 1 then 1 else 0 end)   ;;
-
   }
 
   measure: total_unsucessful_tpi {
     type: number
     sql: sum(case when no_unsuccessful_int >= 1 and no_sucessful_int = 0 then 1 else 0 end)   ;;
-
   }
 
   measure: total_noncontactable_tpi {
     type: number
     sql: sum(case when no_sucessful_int = 0 and no_unsuccessful_int = 0 and no_non_contactable >= 1 then 1 else 0 end)   ;;
-
   }
 
+  measure: pi_sev_cap25k {
+    type: number
+    sql: case when sum(pi_count) = 0 then 0 else sum(pi_incurred_cap25k)/ sum(pi_count) end;;
+  }
 
-
-
-
+  measure: pi_settled_sev_cap25k {
+    type: number
+    sql: sum(case when pi_settled_indicator =1 then pi_incurred_cap25k else 0 end) / sum(case when pi_settled_indicator =1 then pi_count else 0.0000000000000001 end) ;;
+  }
 
 
 
