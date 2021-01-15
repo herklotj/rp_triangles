@@ -377,6 +377,106 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql: ${TABLE}.current_Cause_Code ;;
   }
 
+  measure: ad_incurred {
+    type: number
+    sql:  sum(ad_incurred) ;;
+  }
+
+  measure: tp_incurred {
+    type: number
+    sql:  sum(tp_incurred) ;;
+  }
+
+  measure: pi_incurred {
+    type: number
+    sql:  sum(pi_incurred+large_pi_incurred) ;;
+  }
+
+  measure: pi_incurred_cap1m {
+    type: number
+    sql:  sum(case when (pi_incurred+large_pi_incurred) > 1000000 then 1000000 else (pi_incurred+large_pi_incurred) end) ;;
+  }
+
+  measure: pi_incurred_cap25k {
+    type: number
+    sql:  sum(case when (pi_incurred+large_pi_incurred) > 25000 then 25000 else (pi_incurred+large_pi_incurred) end) ;;
+  }
+
+  measure: pi_xs_incurred_cap1m {
+    type: number
+    sql:  sum(case when (pi_incurred+large_pi_incurred) > 1000000 then 975000 else (large_pi_incurred) end) ;;
+  }
+
+  measure: capped_pi_indexed_incurred {
+    type:  number
+    sql: avg(CASE WHEN capped_pi_indexed_incurred > 0 THEN capped_pi_indexed_incurred END) ;;
+  }
+
+  measure:capped_pi_indexed_freq{
+    type: number
+    sql: sum(case when capped_pi_indexed_incurred > 0 THEN 1 ELSE 0 END)/${exposure_cumulative} ;;
+  }
+
+  measure: capped_pi_indexed_paid {
+    type:  number
+    sql:avg(capped_pi_indexed_paid) ;;
+  }
+
+  measure: ot_incurred {
+    type: number
+    sql:  sum(ot_incurred) ;;
+  }
+
+  measure: ws_incurred {
+    type: number
+    sql:  sum(ws_incurred) ;;
+  }
+
+  measure: ad_paid {
+    type: number
+    sql:  sum(ad_paid) ;;
+  }
+
+  measure: tp_paid {
+    type: number
+    sql:  sum(tp_paid) ;;
+  }
+
+  measure: pi_paid {
+    type: number
+    sql:  sum(pi_paid+large_pi_paid) ;;
+  }
+
+  measure: pi_paid_cap1m {
+    type: number
+    sql:  sum(case when (pi_paid+large_pi_paid) > 1000000 then 1000000 else (pi_paid+large_pi_paid) end) ;;
+  }
+
+  measure: pi_paid_cap25k {
+    type: number
+    sql:  sum(case when (pi_paid+large_pi_paid) > 25000 then 25000 else (pi_paid+large_pi_paid) end) ;;
+  }
+
+  measure: ot_paid {
+    type: number
+    sql:  sum(ot_paid) ;;
+  }
+
+  measure: ws_paid {
+    type: number
+    sql:  sum(ws_paid) ;;
+  }
+
+  measure: recoveries_paid {
+    type: sum
+    sql: ad_paid_rec ;;
+  }
+
+  measure: total_paid {
+    type: sum
+    sql: total_paid;;
+  }
+
   measure: total_incurred {
     type: sum
     sql: total_incurred ;;
@@ -591,13 +691,11 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.0%"
   }
 
-
   measure: ad_std_res_count {
     type: sum
     sql:  AD_Std_Reserve;;
 
   }
-
 
   measure: reported_freq_ex_ws {
     type: number
@@ -618,12 +716,10 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.00%"
   }
 
-
   measure: nonnil_count_exc_ws {
     type: sum
     sql: total_count_exc_ws*1.00;;
     description: "Total Non Nil Count Ex WS"
-
   }
 
   measure: all_notifications_ex_ws {
@@ -636,8 +732,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql: ${nonnil_count_exc_ws}/${all_notifications_ex_ws} ;;
     value_format: "0.0%"
   }
-
-
 
   measure: nonnil_freq_ex_ws {
     type: number
@@ -682,7 +776,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.00%"
   }
 
-
   measure: pi_count {
     type: number
     sql: sum(pi_count) ;;
@@ -692,7 +785,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     type: number
     sql: sum(exposure) ;;
   }
-
 
   measure: ot_freq {
     type: number
@@ -890,33 +982,25 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0%"
   }
 
-
-
   measure: recovery_indicator {
     type: sum
     sql: rec_reserves;;
-
   }
-
 
   measure: ad_incurred_recoveries {
     type: sum
     sql: ad_incurred_recoveries;;
-
   }
 
   measure: ad_recoveries_vs_total_ad {
     type: number
     sql: sum(-ad_incurred_recoveries) / sum(ad_incurred - ad_incurred_recoveries) ;;
-
   }
 
   measure: total_incurred_recoveries {
     type: sum
     sql: total_incurred_recoveries;;
-
   }
-
 
   measure: ad_with_partial_recovery {
     type: number
@@ -939,7 +1023,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.0%"
   }
 
-
   measure: ad_with_no_recovery {
     type: number
     description: ""
@@ -954,12 +1037,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0.00%"
   }
 
-  measure: total_paid {
-    type: sum
-    sql: total_paid;;
-
-  }
-
   measure: average_paid {
     type: average
     sql: total_paid;;
@@ -968,7 +1045,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: paid_proportion {
     type: number
     sql: ${total_paid}/${total_incurred};;
-
   }
 
   measure: ad_paid_proportion {
@@ -1036,103 +1112,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: pi_tp_count_ratio {
     type: number
     sql: sum(pi_count)/nullif(sum(tp_count),0);;
-
-  }
-
-  measure: ad_incurred {
-    type: number
-    sql:  sum(ad_incurred) ;;
-  }
-
-  measure: tp_incurred {
-    type: number
-    sql:  sum(tp_incurred) ;;
-  }
-
-
-  measure: pi_incurred {
-    type: number
-    sql:  sum(pi_incurred+large_pi_incurred) ;;
-  }
-
-  measure: pi_incurred_cap1m {
-    type: number
-    sql:  sum(case when (pi_incurred+large_pi_incurred) > 1000000 then 1000000 else (pi_incurred+large_pi_incurred) end) ;;
-  }
-
-  measure: pi_incurred_cap25k {
-    type: number
-    sql:  sum(case when (pi_incurred+large_pi_incurred) > 25000 then 25000 else (pi_incurred+large_pi_incurred) end) ;;
-  }
-
-  measure: pi_xs_incurred_cap1m {
-    type: number
-    sql:  sum(case when (pi_incurred+large_pi_incurred) > 1000000 then 975000 else (large_pi_incurred) end) ;;
-  }
-
-  measure: capped_pi_indexed_incurred {
-    type:  number
-    sql: avg(CASE WHEN capped_pi_indexed_incurred > 0 THEN capped_pi_indexed_incurred END) ;;
-  }
-
-  measure:capped_pi_indexed_freq{
-    type: number
-    sql: sum(case when capped_pi_indexed_incurred > 0 THEN 1 ELSE 0 END)/${exposure_cumulative} ;;
-  }
-
-  measure: capped_pi_indexed_paid {
-    type:  number
-    sql:avg(capped_pi_indexed_paid) ;;
-  }
-
-  measure: ot_incurred {
-    type: number
-    sql:  sum(ot_incurred) ;;
-  }
-
-  measure: ws_incurred {
-    type: number
-    sql:  sum(ws_incurred) ;;
-  }
-
-  measure: ad_paid {
-    type: number
-    sql:  sum(ad_paid) ;;
-  }
-
-  measure: tp_paid {
-    type: number
-    sql:  sum(tp_paid) ;;
-  }
-
-  measure: pi_paid {
-    type: number
-    sql:  sum(pi_paid+large_pi_paid) ;;
-  }
-
-  measure: pi_paid_cap1m {
-    type: number
-    sql:  sum(case when (pi_paid+large_pi_paid) > 1000000 then 1000000 else (pi_paid+large_pi_paid) end) ;;
-  }
-
-  measure: pi_paid_cap25k {
-    type: number
-    sql:  sum(case when (pi_paid+large_pi_paid) > 25000 then 25000 else (pi_paid+large_pi_paid) end) ;;
-  }
-
-  measure: ot_paid {
-    type: number
-    sql:  sum(ot_paid) ;;
-  }
-
-  measure: ws_paid {
-    type: number
-    sql:  sum(ws_paid) ;;
-  }
-
-  measure: recoveries_paid {
-    type: sum
-    sql: ad_paid_rec ;;
 
   }
 
