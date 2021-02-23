@@ -8,6 +8,7 @@ view: ice_claims_development {
        uw_month,
        uw_year,
        uw_qtr,
+       financial_uw_year,
        to_timestamp(acc_month) AS acc_month,
        acc_year,
        acc_qtr,
@@ -37,6 +38,7 @@ view: ice_claims_development {
        months_between(dev_month,acc_qtr) AS dev_period_acc_qtr,
        months_between(dev_month +day(uw_year) -1,uw_year) AS dev_period_uw_year,
        months_between(dev_month,uw_qtr) AS dev_period_uw_qtr,
+       months_between(dev_month,f_uw_start) AS dev_period_fuw_year,
        total_reported_count_exc_ws AS total_reported_count_exc_ws,
        total_reported_count AS total_reported_count,
        total_count_exc_ws AS total_count_exc_ws,
@@ -51,11 +53,11 @@ view: ice_claims_development {
        ad_reported_count AS AD_reported,
        ad_count AS AD_Non_Nil,
        CASE
-         WHEN (ad_incurred - ad_fees_incurred)> 150 THEN 1
+         WHEN (ad_incurred - ad_fees_incurred) > 150 THEN 1
          ELSE 0
        END AS ad_collared_count,
        ad_paid - ad_paid_exc_rec AS ad_paid_rec,
-      ad_paid_exc_rec,
+       ad_paid_exc_rec,
        CASE
          WHEN ROUND(ROUND(tp_incurred,2) - FLOOR(tp_incurred),2) = 0.81 THEN 1
          ELSE 0
@@ -94,8 +96,8 @@ view: ice_claims_development {
        1.00 *ot_paid AS ot_paid,
        1.00 *ws_incurred AS ws_incurred,
        1.00 *ws_paid AS ws_paid,
-       1.00*capped_pi_indexed_incurred AS capped_pi_indexed_incurred,
-       1.00*capped_pi_indexed_paid AS capped_pi_indexed_paid,
+       1.00 *capped_pi_indexed_incurred AS capped_pi_indexed_incurred,
+       1.00 *capped_pi_indexed_paid AS capped_pi_indexed_paid,
        ad_paid + tp_paid + pi_paid + ot_paid + ws_paid + large_pi_paid AS total_paid,
        total_incurred AS total_incurred,
        large_pi_incurred AS large_pi_incurred,
@@ -113,18 +115,38 @@ view: ice_claims_development {
          WHEN total_incurred > 1000000 THEN 1000000
          ELSE total_incurred
        END AS total_incurred_cap_1m,
-      /*CASE
+       /*CASE
          WHEN settleddate <= dev_month AND total_reported_count > 0 THEN 1.00
          ELSE 0
-       END AS settled_indicator,*/
-      CASE WHEN total_incurred = total_paid and total_count =1 then 1 else 0 end as Settled_Indicator,
-      CASE WHEN ad_incurred = ad_paid and ad_count =1 then 1 else 0 end as AD_Settled_Indicator,
-      CASE WHEN tp_incurred = tp_paid and tp_count =1 then 1 else 0 end as TP_Settled_Indicator,
-      CASE WHEN tp_chire_incurred = tp_chire_paid and tp_chire_count =1 then 1 else 0 end as TP_CHire_Settled_Indicator,
-      CASE WHEN pi_incurred = pi_paid and pi_count =1 then 1 else 0 end as PI_Settled_Indicator,
-      CASE WHEN ot_incurred = ad_paid and ot_count =1 then 1 else 0 end as OT_Settled_Indicator,
-      CASE WHEN ws_incurred = ad_paid and ws_count =1 then 1 else 0 end as WS_Settled_Indicator,
-      po.inception_strategy,
+       END AS settled_indicator,*/ CASE
+         WHEN total_incurred = total_paid AND total_count = 1 THEN 1
+         ELSE 0
+       END AS Settled_Indicator,
+       CASE
+         WHEN ad_incurred = ad_paid AND ad_count = 1 THEN 1
+         ELSE 0
+       END AS AD_Settled_Indicator,
+       CASE
+         WHEN tp_incurred = tp_paid AND tp_count = 1 THEN 1
+         ELSE 0
+       END AS TP_Settled_Indicator,
+       CASE
+         WHEN tp_chire_incurred = tp_chire_paid AND tp_chire_count = 1 THEN 1
+         ELSE 0
+       END AS TP_CHire_Settled_Indicator,
+       CASE
+         WHEN pi_incurred = pi_paid AND pi_count = 1 THEN 1
+         ELSE 0
+       END AS PI_Settled_Indicator,
+       CASE
+         WHEN ot_incurred = ad_paid AND ot_count = 1 THEN 1
+         ELSE 0
+       END AS OT_Settled_Indicator,
+       CASE
+         WHEN ws_incurred = ad_paid AND ws_count = 1 THEN 1
+         ELSE 0
+       END AS WS_Settled_Indicator,
+       po.inception_strategy,
        CASE
          WHEN (notificationdate -day(notificationdate) +1) <= dev_month THEN 1
          ELSE 0
@@ -151,6 +173,8 @@ FROM (SELECT *,
                    eprem.uw_month,
                    eprem.acc_month,
                    d.start_date AS uw_year,
+                   f.fy AS financial_uw_year,
+                   f.start_date AS f_uw_start,
                    timestampadd(MONTH,-1,c.fy_start_date) AS acc_year,
                    c.fy_quarter_start_date AS acc_qtr,
                    e.fy_quarter_start_date AS uw_qtr,
@@ -166,22 +190,21 @@ FROM (SELECT *,
                      WHEN months_between (b.start_date,eprem.acc_month) = 0 THEN exposure
                      ELSE 0
                    END AS exposure
-            FROM
-              (select
-                          Polnum
-                          ,scheme
-                          ,renewseq
-                          ,inception
-                          , min(uw_month) as uw_month
-                          , acc_month
-                          , sum(earned_premium) as earned_premium
-                          , sum(exposure) as exposure
-                          , max(inforce) as inforce
-                 from ice_prem_earned
-                   group by polnum,scheme,renewseq,inception,acc_month
-               ) eprem
-
-
+            FROM (SELECT Polnum,
+                         scheme,
+                         renewseq,
+                         inception,
+                         MIN(uw_month) AS uw_month,
+                         acc_month,
+                         SUM(earned_premium) AS earned_premium,
+                         SUM(exposure) AS exposure,
+                         MAX(inforce) AS inforce
+                  FROM ice_prem_earned
+                  GROUP BY polnum,
+                           scheme,
+                           renewseq,
+                           inception,
+                           acc_month) eprem
               JOIN aauser.calendar b
                 ON eprem.acc_month <= b.start_date
                AND to_date (SYSDATE-DAY (SYSDATE) + 1) >= b.start_date
@@ -190,45 +213,44 @@ FROM (SELECT *,
                      ON eprem.inception >= d.start_date
                     AND eprem.inception <= d.end_date
                     AND d.scheme = eprem.scheme
-              LEFT JOIN aauser.calendar e ON eprem.uw_month = e.start_date) prem
+              LEFT JOIN aauser.calendar e ON eprem.uw_month = e.start_date
+              LEFT JOIN aapricing.financial_years f
+                     ON eprem.inception >= f.start_date
+                    AND eprem.inception <= f.end_date
+                    AND f.scheme = eprem.scheme) prem
         LEFT JOIN ice_claims_cumulative clm
                ON prem.polnum = clm.polnum
               AND prem.acc_month = clm.acc_month
               AND clm.policyinception = prem.inception
               AND clm.dev_period = prem.dev_period /* and  clm.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)))*/ /*and prem.inception <= clm.incidentdate and (prem.inception+364) >= clm.incidentdate and prem.acc_month=clm.acc_month and exposure >0 and clm.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)*/
       WHERE prem.acc_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)) a
-
-LEFT JOIN (SELECT
-  claim_number,
-  count(claim_number) as no_claimants,
-  sum(case when tpinterventionrequired = 'Yes' then 1 else 0 end) as tpinterventionrequired,
-  sum(CASE WHEN tpi_status = 'Successful Intervention' then 1 else 0 end) as no_sucessful_int,
-  sum(CASE WHEN tpi_status = 'Unsuccessful Intervention' then 1 else 0 end) as no_unsuccessful_int,
-  sum(CASE WHEN tpi_status = 'No TPI' then 1 else 0 end) as no_none_tpi,
-  sum(CASE WHEN tpi_status = 'Non Contactable' then 1 else 0 end) as no_non_contactable,
-  sum(CASE WHEN type_of_int = 'Both' then 1 else 0 end) as no_both,
-  sum(CASE WHEN type_of_int = 'CHire' then 1 else 0 end) as no_chire,
-  sum(CASE WHEN type_of_int = 'Repairs' then 1 else 0 end) as no_repairs
-
-  FROM
-
-  (SELECT *,
-  CASE WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Successful' AND (hirevehiclerequired = 'Yes' OR repairsrequired = 'Yes') then 'Successful Intervention'
-  WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Successful' AND (hirevehiclerequired = 'No' OR hirevehiclerequired IS NULL) AND (repairsrequired = 'No' OR repairsrequired IS NULL) then 'Unsuccessful Intervention'
-  WHEN tpinterventionrequired = 'No' then 'No TPI'
-  WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Not Successful' then 'Non Contactable'
-  ELSE 'Unknown' END AS tpi_status,
-  CASE WHEN hirevehiclerequired = 'Yes' AND repairsrequired = 'Yes' then 'Both' WHEN hirevehiclerequired = 'Yes' then 'CHire' WHEN repairsrequired = 'Yes' then 'Repairs' else 'Unknown' end as type_of_int
-  FROM ice_aa_tp_intervention) a
-
-  GROUP BY claim_number) x on a.claimnum = x.claim_number
-
-
+  LEFT JOIN (SELECT claim_number,
+                    COUNT(claim_number) AS no_claimants,
+                    SUM(CASE WHEN tpinterventionrequired = 'Yes' THEN 1 ELSE 0 END) AS tpinterventionrequired,
+                    SUM(CASE WHEN tpi_status = 'Successful Intervention' THEN 1 ELSE 0 END) AS no_sucessful_int,
+                    SUM(CASE WHEN tpi_status = 'Unsuccessful Intervention' THEN 1 ELSE 0 END) AS no_unsuccessful_int,
+                    SUM(CASE WHEN tpi_status = 'No TPI' THEN 1 ELSE 0 END) AS no_none_tpi,
+                    SUM(CASE WHEN tpi_status = 'Non Contactable' THEN 1 ELSE 0 END) AS no_non_contactable,
+                    SUM(CASE WHEN type_of_int = 'Both' THEN 1 ELSE 0 END) AS no_both,
+                    SUM(CASE WHEN type_of_int = 'CHire' THEN 1 ELSE 0 END) AS no_chire,
+                    SUM(CASE WHEN type_of_int = 'Repairs' THEN 1 ELSE 0 END) AS no_repairs
+             FROM (SELECT *,
+                          CASE
+                            WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Successful' AND (hirevehiclerequired = 'Yes' OR repairsrequired = 'Yes') THEN 'Successful Intervention'
+                            WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Successful' AND (hirevehiclerequired = 'No' OR hirevehiclerequired IS NULL) AND (repairsrequired = 'No' OR repairsrequired IS NULL) THEN 'Unsuccessful Intervention'
+                            WHEN tpinterventionrequired = 'No' THEN 'No TPI'
+                            WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Not Successful' THEN 'Non Contactable'
+                            ELSE 'Unknown'
+                          END AS tpi_status,
+                          CASE
+                            WHEN hirevehiclerequired = 'Yes' AND repairsrequired = 'Yes' THEN 'Both'
+                            WHEN hirevehiclerequired = 'Yes' THEN 'CHire'
+                            WHEN repairsrequired = 'Yes' THEN 'Repairs'
+                            ELSE 'Unknown'
+                          END AS type_of_int
+                   FROM ice_aa_tp_intervention) a
+             GROUP BY claim_number) x ON a.claimnum = x.claim_number
   LEFT JOIN v_ice_policy_origin po ON a.polnum = po.policy_reference_number
-
-  /*LEFT JOIN (SELECT polnum, inevncnt, inception_strategy FROM expoclm) EXP
-         ON a.polnum = exp.polnum
-        AND exp.inevncnt = 1*/
 WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
          ;;
   }
@@ -249,6 +271,11 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql: ${TABLE}.inception_strategy ;;
   }
 
+  dimension: financial_uw_year {
+    type: string
+    sql: ${TABLE}.financial_uw_year ;;
+  }
+
   dimension_group: accident_month {
     type: time
     timeframes: [
@@ -256,7 +283,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     ]
     sql: ${TABLE}.acc_month ;;
   }
-
 
   dimension: dev_period_acc_month {
     label: "Development Month Accident Month Basis"
@@ -319,6 +345,12 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     label: "Development Month UW Year Basis"
     type: number
     sql: ${TABLE}.dev_period_uw_year ;;
+  }
+
+  dimension: dev_period_fuw_year {
+    label: "Development Month Financial UW Year Basis"
+    type: number
+    sql: ${TABLE}.dev_period_fuw_year ;;
   }
 
   dimension: exclude_large_loss_pols {
