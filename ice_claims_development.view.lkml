@@ -416,6 +416,11 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql: ${TABLE}.current_Cause_Code ;;
   }
 
+  dimension: Jul_Aug_Inception_2020_flag {
+    type:  number
+    sql: CASE WHEN date(${TABLE}.inception) >= '2020-07-01' AND date(${TABLE}.inception) <= '2020-08-31' then 1 else 0 end  ;;
+  }
+
   measure: ad_incurred {
     type: number
     sql:  sum(ad_incurred) ;;
