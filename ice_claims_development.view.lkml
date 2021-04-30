@@ -80,6 +80,7 @@ view: ice_claims_development {
        END AS OT_Std_Reserve,
        1.00 *tp_count AS TP_Count,
        1.00 *tp_chire_count AS TP_Chire_Count,
+       1.00 *tp_exc_ch_count AS TP_exc_CH_Count,
        1.00 *AD_count AS AD_Count,
        1.00 *PI_count AS PI_Count,
        1.00 *WS_count AS WS_Count,
@@ -88,8 +89,10 @@ view: ice_claims_development {
        1.00 *ad_paid AS ad_paid,
        1.00 *tp_incurred AS tp_incurred,
        1.00 *tp_chire_incurred AS tp_chire_incurred,
+       1.00 *tp_exc_CH_incurred AS tp_exc_CH_incurred,
        1.00 *tp_paid AS tp_paid,
        1.00 *tp_chire_paid AS tp_chire_paid,
+       1.00 *tp_exc_CH_paid AS tp_exc_CH_paid,
        1.00 *pi_incurred AS pi_incurred,
        1.00 *pi_paid AS pi_paid,
        1.00 *ot_incurred AS ot_incurred,
@@ -134,6 +137,10 @@ view: ice_claims_development {
          WHEN tp_chire_incurred = tp_chire_paid AND tp_chire_count = 1 THEN 1
          ELSE 0
        END AS TP_CHire_Settled_Indicator,
+      CASE
+         WHEN tp_exc_CH_incurred = tp_exc_CH_paid AND tp_exc_CH_count = 1 THEN 1
+         ELSE 0
+       END AS TP_exc_CH_Settled_Indicator,
        CASE
          WHEN pi_incurred = pi_paid AND pi_count = 1 THEN 1
          ELSE 0
@@ -858,13 +865,30 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: tp_exc_chire_loss_ratio {
     type: number
-    sql: sum(tp_incurred - tp_chire_incurred)/sum(earned_premium_cumulative);;
+    sql: sum(tp_exc_ch_incurred)/sum(earned_premium_cumulative);;
     value_format: "0%"
   }
 
+  measure: tp_exc_ch_freq {
+    type: number
+    sql: sum(tp_exc_ch_count)/ ${exposure_cumulative} ;;
+    value_format: "0.00%"
+  }
+
+  measure: tp_exc_Ch {
+    type: number
+    sql: sum(tp_exc_ch_Count)/nullif(sum(tp_count),0) ;;
+    value_format: "0.0%"
+  }
   measure: chire_cost_prop_tp_cost {
     type: number
     sql: sum(tp_chire_incurred)/sum(tp_incurred);;
+    value_format: "0%"
+  }
+
+  measure: non_chire_cost_prop_tp_cost {
+    type: number
+    sql: sum(tp_exc_ch_incurred)/sum(tp_incurred);;
     value_format: "0%"
   }
 
@@ -903,6 +927,11 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql: case when sum(tp_chire_count) = 0 then 0 else sum(tp_chire_incurred)/ sum(tp_chire_count) end ;;
   }
 
+  measure: tp_exc_ch_sev {
+    type: number
+    sql: case when sum(tp_exc_ch_count) = 0 then 0 else sum(tp_exc_ch_incurred)/ sum(tp_exc_ch_count) end ;;
+  }
+
   measure: tp_settled_sev {
     type: number
     sql: sum(case when tp_settled_indicator =1 then tp_incurred else 0 end) / sum(case when tp_settled_indicator =1 then tp_count else 0.0000000000000001 end) ;;
@@ -911,6 +940,11 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: tp_chire_settled_sev {
     type: number
     sql: sum(case when TP_CHire_Settled_Indicator =1 then tp_chire_incurred else 0 end) / sum(case when TP_CHire_Settled_Indicator =1 then tp_chire_count else 0.0000000000000001 end) ;;
+  }
+
+  measure: tp_exc_ch_settled_sev {
+    type: number
+    sql: sum(case when TP_exc_CH_Settled_Indicator =1 then tp_exc_ch_incurred else 0 end) / sum(case when TP_exc_CH_Settled_Indicator =1 then tp_exc_ch_count else 0.0000000000000001 end) ;;
   }
 
   measure: pi_sev {
@@ -970,6 +1004,13 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     description: "Settled Proportion"
     value_format: "0%"
   }
+
+    measure: TP_exc_CH_settled_proportion {
+      type: number
+      sql: sum(TP_exc_CH_Settled_Indicator) / nullif(sum(tp_exc_ch_count),0)  ;;
+      description: "Settled Proportion"
+      value_format: "0%"
+    }
 
   measure: PI_settled_proporition {
     type: number
@@ -1096,6 +1137,11 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     type: number
     sql: sum(tp_chire_count)/sum(total_reported_count_exc_ws);;
   }
+
+    measure: tp_exc_ch_pct {
+      type: number
+      sql: sum(tp_exc_ch_count)/sum(total_reported_count_exc_ws);;
+    }
 
   measure: pi_pct {
     type: number
