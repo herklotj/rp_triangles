@@ -206,7 +206,7 @@ FROM (SELECT *,
                          SUM(earned_premium) AS earned_premium,
                          SUM(exposure) AS exposure,
                          MAX(inforce) AS inforce
-                  FROM ice_prem_earned
+                  FROM v_ice_prem_earned
                   GROUP BY polnum,
                            scheme,
                            renewseq,
@@ -1010,12 +1010,12 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0%"
   }
 
-    measure: TP_exc_CH_settled_proportion {
-      type: number
-      sql: sum(TP_exc_CH_Settled_Indicator) / nullif(sum(tp_exc_ch_count),0)  ;;
-      description: "Settled Proportion"
-      value_format: "0%"
-    }
+  measure: TP_exc_CH_settled_proportion {
+    type: number
+    sql: sum(TP_exc_CH_Settled_Indicator) / nullif(sum(tp_exc_ch_count),0)  ;;
+    description: "Settled Proportion"
+    value_format: "0%"
+  }
 
   measure: PI_settled_proporition {
     type: number
@@ -1143,10 +1143,10 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql: sum(tp_chire_count)/sum(total_reported_count_exc_ws);;
   }
 
-    measure: tp_exc_ch_pct {
-      type: number
-      sql: sum(tp_exc_ch_count)/sum(total_reported_count_exc_ws);;
-    }
+  measure: tp_exc_ch_pct {
+    type: number
+    sql: sum(tp_exc_ch_count)/sum(total_reported_count_exc_ws);;
+  }
 
   measure: pi_pct {
     type: number
