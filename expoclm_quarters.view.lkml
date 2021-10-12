@@ -103,11 +103,24 @@ view: expoclm_quarters {
     case when ncdp = 'N' then dec19nm.predicted_ws_freq_an_nm_dec19 else dec19nm.predicted_ws_freq_ap_nm_dec19 end *evy *0.94         as predicted_ws_freq_dec19nm,
     case when ncdp = 'N' then dec19nm.predicted_ws_sev_an_nm_dec19 else dec19nm.predicted_ws_sev_ap_nm_dec19 end *evy   *1.20         as predicted_ws_sev_dec19nm,
 
+    case when ncdp = 'N' then dec19m.predicted_ad_freq_an_m_dec19 else dec19m.predicted_ad_freq_ap_m_dec19 end *evy          as predicted_ad_freq_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_ad_sev_an_m_dec19 else dec19m.predicted_ad_sev_ap_m_dec19 end *evy            as predicted_ad_sev_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_pi_freq_an_m_dec19 else dec19m.predicted_pi_freq_ap_m_dec19 end *evy          as predicted_pi_freq_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_pi_sev_an_m_dec19 else dec19m.predicted_pi_sev_ap_m_dec19 end *evy            as predicted_pi_sev_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_tp_freq_an_m_dec19 else dec19m.predicted_tp_freq_ap_m_dec19 end *evy          as predicted_tp_freq_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_tp_sev_an_m_dec19 else dec19m.predicted_tp_sev_ap_m_dec19 end *evy            as predicted_tp_sev_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_ot_freq_an_m_dec19 else dec19m.predicted_ot_freq_ap_m_dec19 end *evy          as predicted_ot_freq_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_ot_sev_an_m_dec19 else dec19m.predicted_ot_sev_ap_m_dec19 end *evy            as predicted_ot_sev_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_ws_freq_an_m_dec19 else dec19m.predicted_ws_freq_ap_m_dec19 end *evy          as predicted_ws_freq_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_ws_sev_an_m_dec19 else dec19m.predicted_ws_sev_ap_m_dec19 end *evy            as predicted_ws_sev_dec19m,
+
 
 
     case when b.dup = 1 and jcred.dup=1 and jul18nm.dup = 1 then 1 else 0 end as match_flag,
 
     case when a.quote_id = dec19nm.quote_id then 1 else 0 end as score_flag_dec19nm,
+
+    case when a.quote_id = dec19m.quote_id then 1 else 0 end as score_flag_dec19m,
 
     date_trunc('quarter',a.exposure_start) as quarter,
     uwyr
@@ -147,6 +160,14 @@ view: expoclm_quarters {
              from aapricing.uncalibrated_scores_nmdec19
             ) dec19nm
             on a.quote_id = dec19nm.quote_id and dec19nm.dup = 1
+
+left join
+            (select
+               *,
+               row_number() over(partition by quote_id) as dup
+             from aapricing.uncalibrated_scores_mdec19
+            ) dec19m
+            on a.quote_id = dec19m.quote_id and dec19m.dup = 1
 
     left join
         motor_model_calibrations aug18sc
@@ -776,6 +797,109 @@ view: expoclm_quarters {
   measure: total_lr_pred_dec19nm {
     type: number
     sql: (${ad_bc_pred_dec19nm}+${tp_bc_pred_dec19nm}+${ot_bc_pred_dec19nm}+${pi_bc_pred_dec19nm}+${ws_bc_pred_dec19nm})/${average_earned_prem};;
+    value_format: "0%"
+  }
+
+
+
+
+
+
+
+
+  measure: ad_freq_pred_dec19m {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_dec19m = 1 then predicted_ad_freq_dec19m else 0 end)/sum(case when match_flag = 1 AND score_flag_dec19m = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: ad_sev_pred_dec19m {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_dec19m = 1 then predicted_ad_sev_dec19m else 0 end)/sum(case when match_flag = 1 AND score_flag_dec19m = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ad_bc_pred_dec19m {
+    type: number
+    sql: ${ad_freq_pred_dec19m}*${ad_sev_pred_dec19m};;
+    value_format: "#,##0"
+  }
+
+
+  measure: tp_freq_pred_dec19m {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_dec19m = 1 then predicted_tp_freq_dec19m else 0 end)/sum(case when match_flag = 1 AND score_flag_dec19m = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: tp_sev_pred_dec19m {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_dec19m = 1 then predicted_tp_sev_dec19m else 0 end)/sum(case when match_flag = 1 AND score_flag_dec19m = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: tp_bc_pred_dec19m {
+    type: number
+    sql: ${tp_freq_pred_dec19m}*${tp_sev_pred_dec19m};;
+    value_format: "#,##0"
+  }
+
+
+
+  measure: pi_freq_pred_dec19m {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_dec19m = 1 then predicted_pi_freq_dec19m else 0 end)/sum(case when match_flag = 1 AND score_flag_dec19m = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: pi_sev_pred_dec19m {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_dec19m = 1 then predicted_pi_sev_dec19m else 0 end)/sum(case when match_flag = 1 AND score_flag_dec19m = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: pi_bc_pred_dec19m {
+    type: number
+    sql: ${pi_freq_pred_dec19m}*${pi_sev_pred_dec19m};;
+    value_format: "#,##0"
+  }
+
+  measure: ot_freq_pred_dec19m {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_dec19m = 1 then predicted_ot_freq_dec19m else 0 end)/sum(case when match_flag = 1 AND score_flag_dec19m = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: ot_sev_pred_dec19m {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_dec19m = 1 then predicted_ot_sev_dec19m else 0 end)/sum(case when match_flag = 1 AND score_flag_dec19m = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ot_bc_pred_dec19m {
+    type: number
+    sql: ${ot_freq_pred_dec19m}*${ot_sev_pred_dec19m};;
+    value_format: "#,##0"
+  }
+
+  measure: ws_freq_pred_dec19m {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_dec19m = 1 then predicted_ws_freq_dec19m else 0 end)/sum(case when match_flag = 1 AND score_flag_dec19m = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: ws_sev_pred_dec19m {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_dec19m = 1 then predicted_ws_sev_dec19m else 0 end)/sum(case when match_flag = 1 AND score_flag_dec19m = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ws_bc_pred_dec19m {
+    type: number
+    sql: ${ws_freq_pred_dec19m}*${ws_sev_pred_dec19m};;
+    value_format: "#,##0"
+  }
+
+  measure: total_bc_pred_dec19m {
+    type: number
+    sql: ${ad_bc_pred_dec19m}+${tp_bc_pred_dec19m}+${ot_bc_pred_dec19m}+${pi_bc_pred_dec19m}+${ws_bc_pred_dec19m};;
+    value_format: "#,##0"
+  }
+
+  measure: total_lr_pred_dec19m {
+    type: number
+    sql: (${ad_bc_pred_dec19m}+${tp_bc_pred_dec19m}+${ot_bc_pred_dec19m}+${pi_bc_pred_dec19m}+${ws_bc_pred_dec19m})/${average_earned_prem};;
     value_format: "0%"
   }
 
