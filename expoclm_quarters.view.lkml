@@ -114,6 +114,17 @@ view: expoclm_quarters {
     case when ncdp = 'N' then dec19m.predicted_ws_freq_an_m_dec19 else dec19m.predicted_ws_freq_ap_m_dec19 end *evy *0.94         as predicted_ws_freq_dec19m,
     case when ncdp = 'N' then dec19m.predicted_ws_sev_an_m_dec19 else dec19m.predicted_ws_sev_ap_m_dec19 end *evy *1.20           as predicted_ws_sev_dec19m,
 
+    case when ncdp = 'N' then jul19nm.predicted_ad_freq_an else jul19nm.predicted_ad_freq_ap end *evy *1.00         as predicted_ad_freq_jul19nm,
+    case when ncdp = 'N' then jul19nm.predicted_ad_sev_an else jul19nm.predicted_ad_sev_ap end *evy   *1.00         as predicted_ad_sev_jul19nm,
+    case when ncdp = 'N' then jul19nm.predicted_pi_freq_an else jul19nm.predicted_pi_freq_ap end *evy *1.00         as predicted_pi_freq_jul19nm,
+    case when ncdp = 'N' then jul19nm.predicted_pi_sev_an else jul19nm.predicted_pi_sev_ap end *evy   *1.00         as predicted_pi_sev_jul19nm,
+    case when ncdp = 'N' then jul19nm.predicted_tp_freq_an else jul19nm.predicted_tp_freq_ap end *evy *1.00         as predicted_tp_freq_jul19nm,
+    case when ncdp = 'N' then jul19nm.predicted_tp_sev_an else jul19nm.predicted_tp_sev_ap end *evy   *1.00         as predicted_tp_sev_jul19nm,
+    case when ncdp = 'N' then jul19nm.predicted_ot_freq_an else jul19nm.predicted_ot_freq_ap end *evy *1.00         as predicted_ot_freq_jul19nm,
+    case when ncdp = 'N' then jul19nm.predicted_ot_sev_an else jul19nm.predicted_ot_sev_ap end *evy   *1.00         as predicted_ot_sev_jul19nm,
+    case when ncdp = 'N' then jul19nm.predicted_ws_freq_an else jul19nm.predicted_ws_freq_ap end *evy *1.00         as predicted_ws_freq_jul19nm,
+    case when ncdp = 'N' then jul19nm.predicted_ws_sev_an else jul19nm.predicted_ws_sev_ap end *evy   *1.00         as predicted_ws_sev_jul19nm,
+
 
 
     case when b.dup = 1 and jcred.dup=1 and jul18nm.dup = 1 then 1 else 0 end as match_flag,
@@ -121,6 +132,8 @@ view: expoclm_quarters {
     case when a.quote_id = dec19nm.quote_id then 1 else 0 end as score_flag_dec19nm,
 
     case when a.quote_id = dec19m.quote_id then 1 else 0 end as score_flag_dec19m,
+
+    case when a.quote_id = jul19nm.quote_id then 1 else 0 end as score_flag_jul19nm,
 
     date_trunc('quarter',a.exposure_start) as quarter,
     uwyr
@@ -168,6 +181,15 @@ left join
              from aapricing.uncalibrated_scores_mdec19
             ) dec19m
             on a.quote_id = dec19m.quote_id and dec19m.dup = 1
+
+left join
+            (select
+               *,
+               row_number() over(partition by quote_id) as dup
+             from aapricing.uncalibrated_scores_nmjul19
+            ) jul19nm
+            on a.quote_id = jul19nm.quote_id and jul19nm.dup = 1
+
 
     left join
         motor_model_calibrations aug18sc
@@ -903,6 +925,108 @@ left join
     value_format: "0%"
   }
 
+
+
+
+
+
+
+
+  measure: ad_freq_pred_jul19nm {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then predicted_ad_freq_jul19nm else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: ad_sev_pred_jul19nm {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then predicted_ad_sev_jul19nm else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ad_bc_pred_jul19nm {
+    type: number
+    sql: ${ad_freq_pred_jul19nm}*${ad_sev_pred_jul19nm};;
+    value_format: "#,##0"
+  }
+
+
+  measure: tp_freq_pred_jul19nm {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then predicted_tp_freq_jul19nm else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: tp_sev_pred_jul19nm {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then predicted_tp_sev_jul19nm else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: tp_bc_pred_jul19nm {
+    type: number
+    sql: ${tp_freq_pred_jul19nm}*${tp_sev_pred_jul19nm};;
+    value_format: "#,##0"
+  }
+
+
+
+  measure: pi_freq_pred_jul19nm {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then predicted_pi_freq_jul19nm else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: pi_sev_pred_jul19nm {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then predicted_pi_sev_jul19nm else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: pi_bc_pred_jul19nm {
+    type: number
+    sql: ${pi_freq_pred_jul19nm}*${pi_sev_pred_jul19nm};;
+    value_format: "#,##0"
+  }
+
+  measure: ot_freq_pred_jul19nm {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then predicted_ot_freq_jul19nm else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: ot_sev_pred_jul19nm {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then predicted_ot_sev_jul19nm else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ot_bc_pred_jul19nm {
+    type: number
+    sql: ${ot_freq_pred_jul19nm}*${ot_sev_pred_jul19nm};;
+    value_format: "#,##0"
+  }
+
+  measure: ws_freq_pred_jul19nm {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then predicted_ws_freq_jul19nm else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: ws_sev_pred_jul19nm {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then predicted_ws_sev_jul19nm else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19nm = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ws_bc_pred_jul19nm {
+    type: number
+    sql: ${ws_freq_pred_jul19nm}*${ws_sev_pred_jul19nm};;
+    value_format: "#,##0"
+  }
+
+  measure: total_bc_pred_jul19nm {
+    type: number
+    sql: ${ad_bc_pred_jul19nm}+${tp_bc_pred_jul19nm}+${ot_bc_pred_jul19nm}+${pi_bc_pred_jul19nm}+${ws_bc_pred_jul19nm};;
+    value_format: "#,##0"
+  }
+
+  measure: total_lr_pred_jul19nm {
+    type: number
+    sql: (${ad_bc_pred_jul19nm}+${tp_bc_pred_jul19nm}+${ot_bc_pred_jul19nm}+${pi_bc_pred_jul19nm}+${ws_bc_pred_jul19nm})/${average_earned_prem};;
+    value_format: "0%"
+  }
 
 
 
