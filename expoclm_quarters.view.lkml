@@ -92,27 +92,27 @@ view: expoclm_quarters {
     case when ncdp = 'N' then jul18nm.predicted_ws_freq_an else jul18nm.predicted_ws_freq_ap end *evy    *0.90       as predicted_ws_freq_jul18nm,
     case when ncdp = 'N' then jul18nm.predicted_ws_sev_an else jul18nm.predicted_ws_sev_ap end *evy      *1.00*1.24  as predicted_ws_sev_jul18nm,
 
-    case when ncdp = 'N' then dec19nm.predicted_ad_freq_an_nm_dec19 else dec19nm.predicted_ad_freq_ap_nm_dec19 end *evy *0.97         as predicted_ad_freq_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_ad_sev_an_nm_dec19 else dec19nm.predicted_ad_sev_ap_nm_dec19 end *evy   *1.30         as predicted_ad_sev_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_pi_freq_an_nm_dec19 else dec19nm.predicted_pi_freq_ap_nm_dec19 end *evy *1.05*0.95         as predicted_pi_freq_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_pi_sev_an_nm_dec19 else dec19nm.predicted_pi_sev_ap_nm_dec19 end *evy   *0.95         as predicted_pi_sev_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_tp_freq_an_nm_dec19 else dec19nm.predicted_tp_freq_ap_nm_dec19 end *evy *1.03         as predicted_tp_freq_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_tp_sev_an_nm_dec19 else dec19nm.predicted_tp_sev_ap_nm_dec19 end *evy   *1.25         as predicted_tp_sev_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_ot_freq_an_nm_dec19 else dec19nm.predicted_ot_freq_ap_nm_dec19 end *evy *1.23         as predicted_ot_freq_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_ot_sev_an_nm_dec19 else dec19nm.predicted_ot_sev_ap_nm_dec19 end *evy   *1.54         as predicted_ot_sev_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_ws_freq_an_nm_dec19 else dec19nm.predicted_ws_freq_ap_nm_dec19 end *evy *0.94         as predicted_ws_freq_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_ws_sev_an_nm_dec19 else dec19nm.predicted_ws_sev_ap_nm_dec19 end *evy   *1.20         as predicted_ws_sev_dec19nm,
+    case when ncdp = 'N' then dec19nm.predicted_ad_freq_an_nm_dec19 else dec19nm.predicted_ad_freq_ap_nm_dec19 end *evy *1.00         as predicted_ad_freq_dec19nm,
+    case when ncdp = 'N' then dec19nm.predicted_ad_sev_an_nm_dec19 else dec19nm.predicted_ad_sev_ap_nm_dec19 end *evy   *1.00         as predicted_ad_sev_dec19nm,
+    case when ncdp = 'N' then dec19nm.predicted_pi_freq_an_nm_dec19 else dec19nm.predicted_pi_freq_ap_nm_dec19 end *evy *1.00         as predicted_pi_freq_dec19nm,
+    case when ncdp = 'N' then dec19nm.predicted_pi_sev_an_nm_dec19 else dec19nm.predicted_pi_sev_ap_nm_dec19 end *evy   *1.00         as predicted_pi_sev_dec19nm,
+    case when ncdp = 'N' then dec19nm.predicted_tp_freq_an_nm_dec19 else dec19nm.predicted_tp_freq_ap_nm_dec19 end *evy *1.00         as predicted_tp_freq_dec19nm,
+    case when ncdp = 'N' then dec19nm.predicted_tp_sev_an_nm_dec19 else dec19nm.predicted_tp_sev_ap_nm_dec19 end *evy   *1.00         as predicted_tp_sev_dec19nm,
+    case when ncdp = 'N' then dec19nm.predicted_ot_freq_an_nm_dec19 else dec19nm.predicted_ot_freq_ap_nm_dec19 end *evy *1.00         as predicted_ot_freq_dec19nm,
+    case when ncdp = 'N' then dec19nm.predicted_ot_sev_an_nm_dec19 else dec19nm.predicted_ot_sev_ap_nm_dec19 end *evy   *1.00         as predicted_ot_sev_dec19nm,
+    case when ncdp = 'N' then dec19nm.predicted_ws_freq_an_nm_dec19 else dec19nm.predicted_ws_freq_ap_nm_dec19 end *evy *1.00         as predicted_ws_freq_dec19nm,
+    case when ncdp = 'N' then dec19nm.predicted_ws_sev_an_nm_dec19 else dec19nm.predicted_ws_sev_ap_nm_dec19 end *evy   *1.00         as predicted_ws_sev_dec19nm,
 
-    case when ncdp = 'N' then dec19m.predicted_ad_freq_an_m_dec19 else dec19m.predicted_ad_freq_ap_m_dec19 end *evy * 0.97         as predicted_ad_freq_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_ad_sev_an_m_dec19 else dec19m.predicted_ad_sev_ap_m_dec19 end *evy * 1.30           as predicted_ad_sev_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_pi_freq_an_m_dec19 else dec19m.predicted_pi_freq_ap_m_dec19 end *evy *1.0          as predicted_pi_freq_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_pi_sev_an_m_dec19 else dec19m.predicted_pi_sev_ap_m_dec19 end *evy *0.95           as predicted_pi_sev_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_tp_freq_an_m_dec19 else dec19m.predicted_tp_freq_ap_m_dec19 end *evy *1.03         as predicted_tp_freq_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_tp_sev_an_m_dec19 else dec19m.predicted_tp_sev_ap_m_dec19 end *evy *1.25           as predicted_tp_sev_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_ot_freq_an_m_dec19 else dec19m.predicted_ot_freq_ap_m_dec19 end *evy *1.23         as predicted_ot_freq_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_ot_sev_an_m_dec19 else dec19m.predicted_ot_sev_ap_m_dec19 end *evy *1.54           as predicted_ot_sev_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_ws_freq_an_m_dec19 else dec19m.predicted_ws_freq_ap_m_dec19 end *evy *0.94         as predicted_ws_freq_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_ws_sev_an_m_dec19 else dec19m.predicted_ws_sev_ap_m_dec19 end *evy *1.20           as predicted_ws_sev_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_ad_freq_an_m_dec19 else dec19m.predicted_ad_freq_ap_m_dec19 end *evy * 1.00         as predicted_ad_freq_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_ad_sev_an_m_dec19 else dec19m.predicted_ad_sev_ap_m_dec19 end *evy * 1.00           as predicted_ad_sev_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_pi_freq_an_m_dec19 else dec19m.predicted_pi_freq_ap_m_dec19 end *evy *1.00          as predicted_pi_freq_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_pi_sev_an_m_dec19 else dec19m.predicted_pi_sev_ap_m_dec19 end *evy *1.00           as predicted_pi_sev_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_tp_freq_an_m_dec19 else dec19m.predicted_tp_freq_ap_m_dec19 end *evy *1.00         as predicted_tp_freq_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_tp_sev_an_m_dec19 else dec19m.predicted_tp_sev_ap_m_dec19 end *evy *1.00           as predicted_tp_sev_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_ot_freq_an_m_dec19 else dec19m.predicted_ot_freq_ap_m_dec19 end *evy *1.00         as predicted_ot_freq_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_ot_sev_an_m_dec19 else dec19m.predicted_ot_sev_ap_m_dec19 end *evy *1.00           as predicted_ot_sev_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_ws_freq_an_m_dec19 else dec19m.predicted_ws_freq_ap_m_dec19 end *evy *1.00         as predicted_ws_freq_dec19m,
+    case when ncdp = 'N' then dec19m.predicted_ws_sev_an_m_dec19 else dec19m.predicted_ws_sev_ap_m_dec19 end *evy *1.00           as predicted_ws_sev_dec19m,
 
     case when ncdp = 'N' then jul19nm.predicted_ad_freq_an else jul19nm.predicted_ad_freq_ap end *evy *0.97         as predicted_ad_freq_jul19nm,
     case when ncdp = 'N' then jul19nm.predicted_ad_sev_an else jul19nm.predicted_ad_sev_ap end *evy   *1.45         as predicted_ad_sev_jul19nm,
@@ -125,6 +125,17 @@ view: expoclm_quarters {
     case when ncdp = 'N' then jul19nm.predicted_ws_freq_an else jul19nm.predicted_ws_freq_ap end *evy *0.98         as predicted_ws_freq_jul19nm,
     case when ncdp = 'N' then jul19nm.predicted_ws_sev_an else jul19nm.predicted_ws_sev_ap end *evy   *1.27        as predicted_ws_sev_jul19nm,
 
+    case when ncdp = 'N' then jcred.predicted_ad_freq_an else jcred.predicted_ad_freq_ap end *evy *1.00         as predicted_ad_freq_jul19cred_new,
+    case when ncdp = 'N' then jcred.predicted_ad_sev_an else jcred.predicted_ad_sev_ap end *evy   *1.00         as predicted_ad_sev_jul19cred_new,
+    case when ncdp = 'N' then jcred.predicted_pi_freq_an else jcred.predicted_pi_freq_ap end *evy *1.00         as predicted_pi_freq_jul19cred_new,
+    case when ncdp = 'N' then jcred.predicted_pi_sev_an else jcred.predicted_pi_sev_ap end *evy   *1.00         as predicted_pi_sev_jul19cred_new,
+    case when ncdp = 'N' then jcred.predicted_tpd_freq_an else jcred.predicted_tpd_freq_ap end *evy *1.00         as predicted_tp_freq_jul19cred_new,
+    case when ncdp = 'N' then jcred.predicted_tpd_sev_an else jcred.predicted_tpd_sev_ap end *evy   *1.00         as predicted_tp_sev_jul19cred_new,
+    case when ncdp = 'N' then jcred.predicted_ot_freq_an else jcred.predicted_ot_freq_ap end *evy *1.00         as predicted_ot_freq_jul19cred_new,
+    case when ncdp = 'N' then jcred.predicted_ot_sev_an else jcred.predicted_ot_sev_ap end *evy   *1.00         as predicted_ot_sev_jul19cred_new,
+    case when ncdp = 'N' then jcred.predicted_ws_freq_an else jcred.predicted_ws_freq_ap end *evy *1.00         as predicted_ws_freq_jul19cred_new,
+    case when ncdp = 'N' then jcred.predicted_ws_sev_an else jcred.predicted_ws_sev_ap end *evy   *1.00        as predicted_ws_sev_jul19cred_new,
+
 
 
     case when b.dup = 1 and jcred.dup=1 and jul18nm.dup = 1 then 1 else 0 end as match_flag,
@@ -134,6 +145,8 @@ view: expoclm_quarters {
     case when a.quote_id = dec19m.quote_id then 1 else 0 end as score_flag_dec19m,
 
     case when a.quote_id = jul19nm.quote_id then 1 else 0 end as score_flag_jul19nm,
+
+    case when a.quote_id = jcred.quote_id then 1 else 0 end as score_flag_jul19cred_new,
 
     date_trunc('quarter',a.exposure_start) as quarter,
     uwyr
@@ -1027,6 +1040,112 @@ left join
     sql: (${ad_bc_pred_jul19nm}+${tp_bc_pred_jul19nm}+${ot_bc_pred_jul19nm}+${pi_bc_pred_jul19nm}+${ws_bc_pred_jul19nm})/${average_earned_prem};;
     value_format: "0%"
   }
+
+
+
+
+
+
+
+
+
+  measure: ad_freq_pred_jul19cred_new {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then predicted_ad_freq_jul19cred_new else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: ad_sev_pred_jul19cred_new {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then predicted_ad_sev_jul19cred_new else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ad_bc_pred_jul19cred_new {
+    type: number
+    sql: ${ad_freq_pred_jul19cred_new}*${ad_sev_pred_jul19cred_new};;
+    value_format: "#,##0"
+  }
+
+
+  measure: tp_freq_pred_jul19cred_new {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then predicted_tp_freq_jul19cred_new else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: tp_sev_pred_jul19cred_new {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then predicted_tp_sev_jul19cred_new else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: tp_bc_pred_jul19cred_new {
+    type: number
+    sql: ${tp_freq_pred_jul19cred_new}*${tp_sev_pred_jul19cred_new};;
+    value_format: "#,##0"
+  }
+
+
+
+  measure: pi_freq_pred_jul19cred_new {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then predicted_pi_freq_jul19cred_new else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: pi_sev_pred_jul19cred_new {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then predicted_pi_sev_jul19cred_new else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: pi_bc_pred_jul19cred_new {
+    type: number
+    sql: ${pi_freq_pred_jul19cred_new}*${pi_sev_pred_jul19cred_new};;
+    value_format: "#,##0"
+  }
+
+  measure: ot_freq_pred_jul19cred_new {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then predicted_ot_freq_jul19cred_new else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: ot_sev_pred_jul19cred_new {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then predicted_ot_sev_jul19cred_new else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ot_bc_pred_jul19cred_new {
+    type: number
+    sql: ${ot_freq_pred_jul19cred_new}*${ot_sev_pred_jul19cred_new};;
+    value_format: "#,##0"
+  }
+
+  measure: ws_freq_pred_jul19cred_new {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then predicted_ws_freq_jul19cred_new else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+  measure: ws_sev_pred_jul19cred_new {
+    type: number
+    sql: sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then predicted_ws_sev_jul19cred_new else 0 end)/sum(case when match_flag = 1 AND score_flag_jul19cred_new = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+  measure: ws_bc_pred_jul19cred_new {
+    type: number
+    sql: ${ws_freq_pred_jul19cred_new}*${ws_sev_pred_jul19cred_new};;
+    value_format: "#,##0"
+  }
+
+  measure: total_bc_pred_jul19cred_new {
+    type: number
+    sql: ${ad_bc_pred_jul19cred_new}+${tp_bc_pred_jul19cred_new}+${ot_bc_pred_jul19cred_new}+${pi_bc_pred_jul19cred_new}+${ws_bc_pred_jul19cred_new};;
+    value_format: "#,##0"
+  }
+
+  measure: total_lr_pred_jul19cred_new {
+    type: number
+    sql: (${ad_bc_pred_jul19cred_new}+${tp_bc_pred_jul19cred_new}+${ot_bc_pred_jul19cred_new}+${pi_bc_pred_jul19cred_new}+${ws_bc_pred_jul19cred_new})/${average_earned_prem};;
+    value_format: "0%"
+  }
+
+
 
 
 
