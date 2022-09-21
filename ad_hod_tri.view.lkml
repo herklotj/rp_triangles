@@ -96,7 +96,7 @@ FROM (SELECT *,
                      WHEN months_between (b.start_date,eprem.acc_month) = 0 THEN exposure
                      ELSE 0
                    END AS exposure
-            FROM v_ice_prem_earned eprem
+            FROM ice_prem_earned eprem
               JOIN aauser.calendar b
                 ON eprem.acc_month <= b.start_date
                AND to_date (SYSDATE-DAY (SYSDATE) + 1) >= b.start_date
@@ -106,7 +106,7 @@ FROM (SELECT *,
                     AND eprem.inception <= d.end_date
                     AND d.scheme = eprem.scheme
               LEFT JOIN aauser.calendar e ON eprem.uw_month = e.start_date) prem
-        LEFT JOIN v_ad_hod_tri clm
+        LEFT JOIN ad_hod_tri clm
                ON prem.polnum = clm.polnum
               AND prem.acc_month = clm.acc_month
               AND clm.inception = prem.inception
