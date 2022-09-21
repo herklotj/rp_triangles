@@ -501,7 +501,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: pb_freq {
     type: number
     sql: sum(pb_count)/ ${exposure_cumulative} ;;
-    value_format: "0.0%"
+    value_format: "0.00%"
   }
 
   measure: pb_sev {
@@ -513,7 +513,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: pb_proportion {
     type: number
     sql: sum(pb_count)/ sum(ad_count) ;;
-    value_format: "0.0%"
+    value_format: "0.00%"
   }
 
   measure: pb_paid_sev {
