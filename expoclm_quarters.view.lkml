@@ -199,7 +199,7 @@ left join
             (select
                *,
                row_number() over(partition by quote_id) as dup
-             from aapricing.uncalibrated_scores_nmjul19_new
+             from aapricing.uncalibrated_scores_nmjul19
             ) jul19nm
             on a.quote_id = jul19nm.quote_id and jul19nm.dup = 1
 
