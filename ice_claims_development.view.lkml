@@ -206,7 +206,7 @@ FROM (SELECT *,
                          SUM(earned_premium) AS earned_premium,
                          SUM(exposure) AS exposure,
                          MAX(inforce) AS inforce
-                  FROM ice_prem_earned
+                  FROM v_ice_prem_earned
                   GROUP BY polnum,
                            scheme,
                            renewseq,
