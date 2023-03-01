@@ -88,7 +88,7 @@ view: expoclm_quarters_cdl {
     uwyr
 
 
-    FROM expoclm_quarters_cdl a
+    FROM expoclm_quarters_cdl_modelling a
 
 
  left join
