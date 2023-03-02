@@ -749,6 +749,13 @@ left join
     value_format: "#,##0"
   }
 
+  measure: large_pi_freq_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_lpi_freq_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+
 
 
 }
