@@ -86,6 +86,7 @@ view: expoclm_quarters_cdl {
 
     case when a.quote_id = dec19nm.quote_id then 1 else 0 end as score_flag_dec19nm,
     case when a.quote_id = dec19m.quote_id then 1 else 0 end as score_flag_dec19m,
+    case when a.quote_id = cdl_models.quote_id then 1 else 0 end as score_flag_cdl_models,
 
 
     date_trunc('quarter',a.exposure_start) as quarter,
@@ -110,6 +111,14 @@ left join
              from aapricing.uncalibrated_scores_mdec19_new
             ) dec19m
             on a.quote_id = dec19m.quote_id and dec19m.dup = 1
+
+left join
+            (select
+               *,
+               row_number() over(partition by quote_id) as dup
+             from aapricing.uncalibrated_scores_initial_cdl_models
+            ) cdl_models
+            on a.quote_id = cdl_models.quote_id and cdl_models.dup = 1
 
 
     LEFT JOIN
@@ -610,6 +619,122 @@ left join
     sql: (${ad_bc_pred_dec19m}+${tp_bc_pred_dec19m}+${ot_bc_pred_dec19m}+${pi_bc_pred_dec19m}+${ws_bc_pred_dec19m})/${average_earned_prem};;
     value_format: "0%"
   }
+
+
+
+
+
+
+  measure: ad_freq_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_ad_freq_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: ad_sev_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_ad_sev_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+
+  measure: ad_bc_pred_cdl_models {
+    type: number
+    sql: ${ad_freq_pred_cdl_models}*${ad_sev_pred_cdl_models};;
+    value_format: "#,##0"
+  }
+
+  measure: tpo_freq_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_tpo_freq_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: tpo_sev_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_tpo_sev_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+
+  measure: tpo_bc_pred_cdl_models {
+    type: number
+    sql: ${tpo_freq_pred_cdl_models}*${tpo_sev_pred_cdl_models};;
+    value_format: "#,##0"
+  }
+
+
+  measure: tpc_freq_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_tpc_freq_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: tpc_sev_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_tpc_sev_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+
+  measure: tpc_bc_pred_cdl_models {
+    type: number
+    sql: ${tpc_freq_pred_cdl_models}*${tpc_sev_pred_cdl_models};;
+    value_format: "#,##0"
+  }
+
+
+  measure: pi_freq_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_pi_freq_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: pi_sev_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_pi_sev_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+
+  measure: pi_bc_pred_cdl_models {
+    type: number
+    sql: ${pi_freq_pred_cdl_models}*${pi_sev_pred_cdl_models};;
+    value_format: "#,##0"
+  }
+
+  measure: ot_freq_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_ot_freq_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: ot_sev_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_ot_sev_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+
+  measure: ot_bc_pred_cdl_models {
+    type: number
+    sql: ${ot_freq_pred_cdl_models}*${ot_sev_pred_cdl_models};;
+    value_format: "#,##0"
+  }
+
+  measure: ws_freq_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_ws_freq_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "0.00%"
+  }
+
+  measure: ws_sev_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_ws_sev_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+
+  measure: ws_bc_pred_cdl_models {
+    type: number
+    sql: ${ws_freq_pred_cdl_models}*${ws_sev_pred_cdl_models};;
+    value_format: "#,##0"
+  }
+
 
 
 }
