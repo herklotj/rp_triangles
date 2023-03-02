@@ -23,8 +23,15 @@ view: expoclm_quarters_cdl {
     a.tp_incurred_cap_50k,
     a.tp_count,
 
+    a.tp_other_count,
+    a.tp_other_incurred,
+
+    a.tp_chire_count,
+    a.tp_chire_incurred,
+
     a.pi_paid,
     a.pi_incurred,
+    a.pi_incurred_cap_25k,
     a.pi_incurred_cap_50k,
     a.pi_count,
 
@@ -38,13 +45,10 @@ view: expoclm_quarters_cdl {
     a.ws_incurred_cap_50k,
     a.ws_count,
 
+    CASE WHEN a.pi_incurred_excess_25k > 0 then 1 else 0 end as large_pi_count,
+    CASE WHEN a.pi_incurred_excess_25k > 0 then pi_incurred_excess_25k else 0 end as large_pi_incurred,
 
 
-    a.total_paid,
-    a.total_incurred,
-    a.total_incurred_cap_50k,
-    a.total_count,
-    a.total_count_exc_ws,
 
     CASE WHEN p.dev_quarter IS NOT NULL THEN a.tp_count*p.tp_frequency ELSE a.tp_count END AS projected_tp_count,
     CASE WHEN p.dev_quarter IS NOT NULL THEN a.ad_count*p.ad_frequency ELSE a.ad_count END AS projected_ad_count,
@@ -171,6 +175,18 @@ left join
     value_format: "0.00%"
   }
 
+  measure: tp_other_freq {
+    type: number
+    sql: sum(tp_other_count)/nullif(sum(evy),0) ;;
+    value_format: "0.00%"
+  }
+
+  measure: tp_chire_freq {
+    type: number
+    sql: sum(tp_chire_count)/nullif(sum(evy),0) ;;
+    value_format: "0.00%"
+  }
+
   measure: pi_freq {
     type: number
     sql: sum(pi_count)/nullif(sum(evy),0) ;;
@@ -207,6 +223,12 @@ left join
     value_format: "0.00%"
   }
 
+  measure: large_pi_freq {
+    type: number
+    sql: sum(large_pi_count)/nullif(sum(evy),0) ;;
+    value_format: "0.00%"
+  }
+
   measure: ad_sev {
     type: number
     sql: sum(ad_incurred)/nullif(sum(ad_count),0);;
@@ -219,9 +241,27 @@ left join
     value_format: "#,##0"
   }
 
+  measure: tp_other_sev {
+    type: number
+    sql: sum(tp_other_incurred)/nullif(sum(tp_other_count),0);;
+    value_format: "#,##0"
+  }
+
+  measure: tp_chire_sev {
+    type: number
+    sql: sum(tp_chire_incurred)/nullif(sum(tp_chire_count),0);;
+    value_format: "#,##0"
+  }
+
   measure: pi_sev_50k {
     type: number
     sql: sum(pi_incurred_cap_50k)/nullif(sum(pi_count),0);;
+    value_format: "#,##0"
+  }
+
+  measure: pi_sev_25k {
+    type: number
+    sql: sum(pi_incurred_cap_25k)/nullif(sum(pi_count),0);;
     value_format: "#,##0"
   }
 
@@ -234,6 +274,12 @@ left join
   measure: ws_sev {
     type: number
     sql: sum(ws_incurred)/nullif(sum(ws_count),0);;
+    value_format: "#,##0"
+  }
+
+  measure: large_pi_sev {
+    type: number
+    sql: sum(large_pi_incurred)/nullif(sum(large_pi_count),0);;
     value_format: "#,##0"
   }
 
@@ -268,6 +314,12 @@ left join
     value_format: "#,##0"
   }
 
+  measure: pi_bc_cap_25k {
+    type: number
+    sql: sum(pi_incurred_cap_25k)/nullif(sum(evy),0);;
+    value_format: "#,##0"
+  }
+
   measure: pi_ult_bc_cap_50k {
     type: number
     sql: sum(projected_pi_incurred_cap_50k)/nullif(sum(evy),0);;
@@ -283,6 +335,24 @@ left join
   measure: ws_bc {
     type: number
     sql: sum(ws_incurred)/nullif(sum(evy),0);;
+    value_format: "#,##0"
+  }
+
+  measure: tp_other_bc {
+    type: number
+    sql: sum(tp_other_incurred)/nullif(sum(evy),0);;
+    value_format: "#,##0"
+  }
+
+  measure: tp_chire_bc {
+    type: number
+    sql: sum(tp_chire_incurred)/nullif(sum(evy),0);;
+    value_format: "#,##0"
+  }
+
+  measure: large_pi_bc {
+    type: number
+    sql: sum(large_pi_incurred)/nullif(sum(evy),0);;
     value_format: "#,##0"
   }
 
