@@ -96,6 +96,7 @@ view: expoclm_quarters_cdl {
     predicted_tpo_sev_initialcdlmodels *evy *1.23 as predicted_tpo_sev_initialcdlmodels,
     predicted_ws_freq_initialcdlmodels *evy *0.89 as predicted_ws_freq_initialcdlmodels,
     predicted_ws_sev_initialcdlmodels *evy *1.23 as predicted_ws_sev_initialcdlmodels,
+    116827 * evy as predicted_lpi_sev_initialcdlmodels,
 
 
     case when a.quote_id = dec19nm.quote_id then 1 else 0 end as score_flag_dec19nm,
@@ -753,6 +754,18 @@ left join
     type: number
     sql: sum(case when score_flag_cdl_models = 1 then predicted_lpi_freq_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
     value_format: "0.00%"
+  }
+
+  measure: large_pi_sev_pred_cdl_models {
+    type: number
+    sql: sum(case when score_flag_cdl_models = 1 then predicted_lpi_sev_initialcdlmodels else 0 end)/sum(case when score_flag_cdl_models = 1 then evy else 0 end) ;;
+    value_format: "#,##0"
+  }
+
+  measure: large_pi_bc_pred_cdl_models {
+    type: number
+    sql: ${large_pi_freq_pred_cdl_models}*${large_pi_sev_pred_cdl_models};;
+    value_format: "#,##0"
   }
 
 
