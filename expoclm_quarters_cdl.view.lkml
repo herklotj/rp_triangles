@@ -938,7 +938,7 @@ left join
 
   measure: lpi_bc_pred_cdl_models_adj {
     type: number
-    sql: ${ad_freq_pred_cdl_models_adj}*${ad_sev_pred_cdl_models_adj};;
+    sql: ${lpi_freq_pred_cdl_models_adj}*${lpi_sev_pred_cdl_models_adj};;
     value_format: "#,##0"
   }
 
