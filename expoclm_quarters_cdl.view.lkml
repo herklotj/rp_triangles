@@ -108,7 +108,7 @@ view: expoclm_quarters_cdl {
     predicted_tpc_freq_initialcdlmodels *evy *1.13  as predicted_tpc_freq_initialcdlmodels_adj,
     predicted_tpc_sev_initialcdlmodels *evy *1.60  as predicted_tpc_sev_initialcdlmodels_adj,
     predicted_tpo_freq_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_tpo_freq_res_202212 ELSE 1 end) *evy *1.18  as predicted_tpo_freq_initialcdlmodels_adj,
-    predicted_tpo_sev_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_tpo_sev_res_202212 ELSE 1 end) *evy *1.81 as predicted_tpo_sev_initialcdlmodels_adj,
+    predicted_tpo_sev_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_tpo_sev_res_202212 ELSE 1 end) *evy 1.44 as predicted_tpo_sev_initialcdlmodels_adj,
     predicted_ws_freq_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_ws_freq_res_202212 ELSE 1 end) *evy *0.91  as predicted_ws_freq_initialcdlmodels_adj,
     predicted_ws_sev_initialcdlmodels *evy *1.23  as predicted_ws_sev_initialcdlmodels_adj,
     predicted_lpi_freq_initialcdlmodels *evy *1.11  as predicted_lpi_freq_initialcdlmodels_adj,
