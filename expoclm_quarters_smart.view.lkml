@@ -59,16 +59,16 @@ view: expoclm_quarters_smart {
   CASE WHEN p.dev_quarter IS NOT NULL THEN a.pi_incurred_cap_50k*p.pi_frequency
           ELSE a.pi_incurred_cap_50k END AS projected_pi_incurred_cap_50k,
 
-    smart.predicted_ad_freq_s_mar16*evy         as predicted_ad_freq_smar16,
-    smart.predicted_ad_sev_s_mar16*evy         as predicted_ad_sev_smar16,
-    smart.predicted_pi_freq_s_mar16*evy         as predicted_pi_freq_smar16,
-    smart.predicted_pi_sev_s_mar16*evy         as predicted_pi_sev_smar16,
-    smart.predicted_tp_freq_s_mar16*evy         as predicted_tp_freq_smar16,
-    smart.predicted_tp_sev_s_mar16*evy         as predicted_tp_sev_smar16,
-    smart.predicted_ot_freq_s_mar16*evy         as predicted_ot_freq_smar16,
-    smart.predicted_ot_sev_s_mar16*evy         as predicted_ot_sev_smar16,
-    smart.predicted_ws_freq_s_mar16*evy         as predicted_ws_freq_smar16,
-    smart.predicted_ws_sev_s_mar16*evy         as predicted_ws_sev_smar16,
+    smart.predicted_ad_freq_s_mar16*evy*1.45         as predicted_ad_freq_smar16,
+    smart.predicted_ad_sev_s_mar16*evy*2.536         as predicted_ad_sev_smar16,
+    smart.predicted_pi_freq_s_mar16*evy*1.209         as predicted_pi_freq_smar16,
+    smart.predicted_pi_sev_s_mar16*evy*0.863         as predicted_pi_sev_smar16,
+    smart.predicted_tp_freq_s_mar16*evy*1.74         as predicted_tp_freq_smar16,
+    smart.predicted_tp_sev_s_mar16*evy*2.1         as predicted_tp_sev_smar16,
+    smart.predicted_ot_freq_s_mar16*evy*1.474         as predicted_ot_freq_smar16,
+    smart.predicted_ot_sev_s_mar16*evy*3.428         as predicted_ot_sev_smar16,
+    smart.predicted_ws_freq_s_mar16*evy*0.716         as predicted_ws_freq_smar16,
+    smart.predicted_ws_sev_s_mar16*evy*1.998         as predicted_ws_sev_smar16,
 
 
     case when a.quote_id = smart.quote_id then 1 else 0 end as score_flag_smar16,
