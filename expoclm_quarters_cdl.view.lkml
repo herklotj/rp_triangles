@@ -114,8 +114,8 @@ view: expoclm_quarters_cdl {
     predicted_tpo_sev_cdl_apr23 * (CASE WHEN residual_flag_cdl_apr23 = 'Y' THEN predicted_tpo_sev_res_cdl_apr23 ELSE 1 end) *evy *1.45  as predicted_tpo_sev_cdl_apr23,
     predicted_ws_freq_cdl_apr23 * (CASE WHEN residual_flag_cdl_apr23 = 'Y' THEN predicted_ws_freq_res_cdl_apr23 ELSE 1 end) *evy *0.92   as predicted_ws_freq_cdl_apr23,
     predicted_ws_sev_cdl_apr23 * evy *1.26   as predicted_ws_sev_cdl_apr23,
-    predicted_lpi_freq_cdl_apr23 * evy as predicted_lpi_freq_cdl_apr23,
-    108843 * evy as predicted_lpi_sev_cdl_apr23,
+    predicted_lpi_freq_cdl_apr23 * evy *1.11 as predicted_lpi_freq_cdl_apr23,
+    116827 * evy as predicted_lpi_sev_cdl_apr23,
 
 
     case when a.quote_id = dec19nm.quote_id then 1 else 0 end as score_flag_dec19nm,
