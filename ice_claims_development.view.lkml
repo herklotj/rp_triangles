@@ -10,7 +10,7 @@ view: ice_claims_development {
        uw_qtr,
        financial_uw_year,
        to_timestamp(acc_month) AS acc_month,
-       acc_year,
+       to_timestamp(acc_year) as acc_year,
        acc_qtr,
        dev_month,
        CASE
