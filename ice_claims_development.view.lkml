@@ -118,6 +118,10 @@ view: ice_claims_development {
          WHEN total_incurred > 1000000 THEN 1000000
          ELSE total_incurred
        END AS total_incurred_cap_1m,
+       CASE
+         WHEN total_incurred > 2000000 THEN 2000000
+         ELSE total_incurred
+       END AS total_incurred_cap_2m,
        /*CASE
          WHEN settleddate <= dev_month AND total_reported_count > 0 THEN 1.00
          ELSE 0
@@ -542,7 +546,13 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: total_incurred_cap_1m {
     type: sum
     sql: total_incurred_cap_1m ;;
-    description: "Total Incurred Claims Cap 50k"
+    description: "Total Incurred Claims Cap 1 million"
+  }
+
+  measure: total_incurred_cap_2m {
+    type: sum
+    sql: total_incurred_cap_2m ;;
+    description: "Total Incurred Claims Cap 2 million"
   }
 
   measure: earned_premium {
