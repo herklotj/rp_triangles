@@ -626,6 +626,13 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     value_format: "0%"
   }
 
+  measure: loss_ratio_cap_2m {
+    type: number
+    sql: ${total_incurred_cap_2m} /nullif(${earned_premium_cumulative},0);;
+    description: "Loss Ratio Cap 2m"
+    value_format: "0%"
+  }
+
   measure: ad_loss_ratio {
     type: number
     sql: sum(ad_incurred)/sum(earned_premium_cumulative);;
