@@ -49,7 +49,6 @@ view: expoclm_quarters_cdl {
     CASE WHEN a.pi_incurred_excess_25k > 0 then pi_incurred_excess_25k else 0 end as large_pi_incurred,
 
 
-
     CASE WHEN p.dev_quarter IS NOT NULL THEN a.tp_count*p.tp_frequency ELSE a.tp_count END AS projected_tp_count,
     CASE WHEN p.dev_quarter IS NOT NULL THEN a.ad_count*p.ad_frequency ELSE a.ad_count END AS projected_ad_count,
     CASE WHEN p.dev_quarter IS NOT NULL THEN a.pi_count*p.pi_frequency ELSE a.pi_count END AS projected_pi_count,
@@ -61,67 +60,22 @@ view: expoclm_quarters_cdl {
     CASE WHEN p.dev_quarter IS NOT NULL THEN a.pi_incurred_cap_50k*p.pi_frequency ELSE a.pi_incurred_cap_50k END AS projected_pi_incurred_cap_50k,
 
 
-    case when ncdp = 'N' then dec19nm.predicted_ad_freq_an_nm_dec19 else dec19nm.predicted_ad_freq_ap_nm_dec19 end *evy *1.031         as predicted_ad_freq_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_ad_sev_an_nm_dec19 else dec19nm.predicted_ad_sev_ap_nm_dec19 end *evy *1.946        as predicted_ad_sev_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_pi_freq_an_nm_dec19 else dec19nm.predicted_pi_freq_ap_nm_dec19 end *evy *0.924         as predicted_pi_freq_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_pi_sev_an_nm_dec19 else dec19nm.predicted_pi_sev_ap_nm_dec19 end *evy *0.973          as predicted_pi_sev_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_tp_freq_an_nm_dec19 else dec19nm.predicted_tp_freq_ap_nm_dec19 end *evy *1.008          as predicted_tp_freq_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_tp_sev_an_nm_dec19 else dec19nm.predicted_tp_sev_ap_nm_dec19 end *evy *1.689            as predicted_tp_sev_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_ot_freq_an_nm_dec19 else dec19nm.predicted_ot_freq_ap_nm_dec19 end *evy *1.601         as predicted_ot_freq_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_ot_sev_an_nm_dec19 else dec19nm.predicted_ot_sev_ap_nm_dec19 end *evy *2.074           as predicted_ot_sev_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_ws_freq_an_nm_dec19 else dec19nm.predicted_ws_freq_ap_nm_dec19 end *evy *1.031         as predicted_ws_freq_dec19nm,
-    case when ncdp = 'N' then dec19nm.predicted_ws_sev_an_nm_dec19 else dec19nm.predicted_ws_sev_ap_nm_dec19 end *evy *1.468         as predicted_ws_sev_dec19nm,
-
-    case when ncdp = 'N' then dec19m.predicted_ad_freq_an_m_dec19 else dec19m.predicted_ad_freq_ap_m_dec19 end *evy *1.037         as predicted_ad_freq_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_ad_sev_an_m_dec19 else dec19m.predicted_ad_sev_ap_m_dec19 end *evy *1.947         as predicted_ad_sev_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_pi_freq_an_m_dec19 else dec19m.predicted_pi_freq_ap_m_dec19 end *evy *0.902           as predicted_pi_freq_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_pi_sev_an_m_dec19 else dec19m.predicted_pi_sev_ap_m_dec19 end *evy *0.975           as predicted_pi_sev_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_tp_freq_an_m_dec19 else dec19m.predicted_tp_freq_ap_m_dec19 end *evy *0.988         as predicted_tp_freq_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_tp_sev_an_m_dec19 else dec19m.predicted_tp_sev_ap_m_dec19 end *evy *1.692          as predicted_tp_sev_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_ot_freq_an_m_dec19 else dec19m.predicted_ot_freq_ap_m_dec19 end *evy *1.533          as predicted_ot_freq_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_ot_sev_an_m_dec19 else dec19m.predicted_ot_sev_ap_m_dec19 end *evy *2.112           as predicted_ot_sev_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_ws_freq_an_m_dec19 else dec19m.predicted_ws_freq_ap_m_dec19 end *evy *1.031         as predicted_ws_freq_dec19m,
-    case when ncdp = 'N' then dec19m.predicted_ws_sev_an_m_dec19 else dec19m.predicted_ws_sev_ap_m_dec19 end *evy *1.468          as predicted_ws_sev_dec19m,
-
-
-
-    predicted_ad_freq_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_ad_freq_res_202212 ELSE 1 end) *evy *1.31  as predicted_ad_freq_initialcdlmodels_adj,
-    predicted_ad_sev_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_ad_sev_res_202212 ELSE 1 end) *evy *1.49  as predicted_ad_sev_initialcdlmodels_adj,
-    predicted_ot_freq_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_ot_freq_res_202212 ELSE 1 end) *evy *1.44  as predicted_ot_freq_initialcdlmodels_adj,
-    predicted_ot_sev_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_ot_sev_res_202212 ELSE 1 end) *evy *1.46  as predicted_ot_sev_initialcdlmodels_adj,
-    predicted_pi_freq_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_pi_freq_res_202212 ELSE 1 end) *evy *1.19  as predicted_pi_freq_initialcdlmodels_adj,
-    predicted_pi_sev_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_pi_sev_res_202212 ELSE 1 end) *evy *0.94  as predicted_pi_sev_initialcdlmodels_adj,
-    predicted_tpc_freq_initialcdlmodels *evy *1.13  as predicted_tpc_freq_initialcdlmodels_adj,
-    predicted_tpc_sev_initialcdlmodels *evy *1.60  as predicted_tpc_sev_initialcdlmodels_adj,
-    predicted_tpo_freq_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_tpo_freq_res_202212 ELSE 1 end) *evy *1.18  as predicted_tpo_freq_initialcdlmodels_adj,
-    predicted_tpo_sev_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_tpo_sev_res_202212 ELSE 1 end) *evy *1.44 as predicted_tpo_sev_initialcdlmodels_adj,
-    predicted_ws_freq_initialcdlmodels *(CASE WHEN residual_flag = 'Y' THEN predicted_ws_freq_res_202212 ELSE 1 end) *evy *0.91  as predicted_ws_freq_initialcdlmodels_adj,
-    predicted_ws_sev_initialcdlmodels *evy *1.23  as predicted_ws_sev_initialcdlmodels_adj,
-    predicted_lpi_freq_initialcdlmodels *evy *1.11  as predicted_lpi_freq_initialcdlmodels_adj,
-    116827 *evy as predicted_lpi_sev_initialcdlmodels_adj,
-
-
-
-    predicted_ad_freq_cdl_apr23 * (CASE WHEN residual_flag_cdl_apr23 = 'Y' THEN predicted_ad_freq_res_cdl_apr23 ELSE 1 end) *evy *1.33  as predicted_ad_freq_cdl_apr23,
-    predicted_ad_sev_cdl_apr23 * (CASE WHEN residual_flag_cdl_apr23 = 'Y' THEN predicted_ad_sev_res_cdl_apr23 ELSE 1 end) *evy *1.48   as predicted_ad_sev_cdl_apr23,
-    predicted_ot_freq_cdl_apr23 * (CASE WHEN residual_flag_cdl_apr23 = 'Y' THEN predicted_ot_freq_res_cdl_apr23 ELSE 1 end) *evy *1.47   as predicted_ot_freq_cdl_apr23,
-    predicted_ot_sev_cdl_apr23 * (CASE WHEN residual_flag_cdl_apr23 = 'Y' THEN predicted_ot_sev_res_cdl_apr23 ELSE 1 end) *evy *1.45   as predicted_ot_sev_cdl_apr23,
-    predicted_pi_freq_cdl_apr23 * (CASE WHEN residual_flag_cdl_apr23 = 'Y' THEN predicted_pi_freq_res_cdl_apr23 ELSE 1 end) *evy *1.21   as predicted_pi_freq_cdl_apr23,
-    predicted_pi_sev_cdl_apr23 * (CASE WHEN residual_flag_cdl_apr23 = 'Y' THEN predicted_pi_sev_res_cdl_apr23 ELSE 1 end) *evy *0.99   as predicted_pi_sev_cdl_apr23,
-    predicted_tpc_freq_cdl_apr23 * evy *1.15   as predicted_tpc_freq_cdl_apr23,
-    predicted_tpc_sev_cdl_apr23 * evy *1.73   as predicted_tpc_sev_cdl_apr23,
-    predicted_tpo_freq_cdl_apr23 * (CASE WHEN residual_flag_cdl_apr23 = 'Y' THEN predicted_tpo_freq_res_cdl_apr23 ELSE 1 end) *evy *1.20   as predicted_tpo_freq_cdl_apr23,
-    predicted_tpo_sev_cdl_apr23 * (CASE WHEN residual_flag_cdl_apr23 = 'Y' THEN predicted_tpo_sev_res_cdl_apr23 ELSE 1 end) *evy *1.45  as predicted_tpo_sev_cdl_apr23,
-    predicted_ws_freq_cdl_apr23 * (CASE WHEN residual_flag_cdl_apr23 = 'Y' THEN predicted_ws_freq_res_cdl_apr23 ELSE 1 end) *evy *0.92   as predicted_ws_freq_cdl_apr23,
-    predicted_ws_sev_cdl_apr23 * evy *1.26   as predicted_ws_sev_cdl_apr23,
+    predicted_ad_freq_cdl_apr23 * (CASE WHEN cdl_apr23_res.residual_flag = 'Y' THEN predicted_ad_freq_res_cdl_apr23 ELSE 1 end) *evy *1.33 *0.991  as predicted_ad_freq_cdl_apr23,
+    predicted_ad_sev_cdl_apr23 * (CASE WHEN cdl_apr23_res.residual_flag = 'Y' THEN predicted_ad_sev_res_cdl_apr23 ELSE 1 end) *evy *1.48 *1.042   as predicted_ad_sev_cdl_apr23,
+    predicted_ot_freq_cdl_apr23 * (CASE WHEN cdl_apr23_res.residual_flag = 'Y' THEN predicted_ot_freq_res_cdl_apr23 ELSE 1 end) *evy *1.47 *0.844   as predicted_ot_freq_cdl_apr23,
+    predicted_ot_sev_cdl_apr23 * (CASE WHEN cdl_apr23_res.residual_flag = 'Y' THEN predicted_ot_sev_res_cdl_apr23 ELSE 1 end) *evy *1.45 *1.116   as predicted_ot_sev_cdl_apr23,
+    predicted_pi_freq_cdl_apr23 * (CASE WHEN cdl_apr23_res.residual_flag = 'Y' THEN predicted_pi_freq_res_cdl_apr23 ELSE 1 end) *evy *1.21 *1.003   as predicted_pi_freq_cdl_apr23,
+    predicted_pi_sev_cdl_apr23 * (CASE WHEN cdl_apr23_res.residual_flag = 'Y' THEN predicted_pi_sev_res_cdl_apr23 ELSE 1 end) *evy *0.99 *1.012   as predicted_pi_sev_cdl_apr23,
+    predicted_tpc_freq_cdl_apr23 * evy *1.15 *0.997   as predicted_tpc_freq_cdl_apr23,
+    predicted_tpc_sev_cdl_apr23 * evy *1.73 *1.032   as predicted_tpc_sev_cdl_apr23,
+    predicted_tpo_freq_cdl_apr23 * (CASE WHEN cdl_apr23_res.residual_flag = 'Y' THEN predicted_tpo_freq_res_cdl_apr23 ELSE 1 end) *evy *1.20 *1.010   as predicted_tpo_freq_cdl_apr23,
+    predicted_tpo_sev_cdl_apr23 * (CASE WHEN cdl_apr23_res.residual_flag = 'Y' THEN predicted_tpo_sev_res_cdl_apr23 ELSE 1 end) *evy *1.45 *1.052  as predicted_tpo_sev_cdl_apr23,
+    predicted_ws_freq_cdl_apr23 * (CASE WHEN cdl_apr23_res.residual_flag = 'Y' THEN predicted_ws_freq_res_cdl_apr23 ELSE 1 end) *evy *0.92 *1.021   as predicted_ws_freq_cdl_apr23,
+    predicted_ws_sev_cdl_apr23 * evy *1.26 *1.087   as predicted_ws_sev_cdl_apr23,
     predicted_lpi_freq_cdl_apr23 * evy *1.11 as predicted_lpi_freq_cdl_apr23,
-    116827 * evy as predicted_lpi_sev_cdl_apr23,
+    116827 * evy *1.0275 as predicted_lpi_sev_cdl_apr23,
 
 
-    case when a.quote_id = dec19nm.quote_id then 1 else 0 end as score_flag_dec19nm,
-    case when a.quote_id = dec19m.quote_id then 1 else 0 end as score_flag_dec19m,
-    case when a.quote_id = cdl_models.quote_id then 1 else 0 end as score_flag_cdl_models,
-    case when a.quote_id = cdl_residuals.quote_id then 1 else 0 end as score_flag_cdl_residuals,
     case when a.quote_id = cdl_apr23.quote_id then 1 else 0 end as score_flag_cdl_apr23,
     case when a.quote_id = cdl_apr23_res.quote_id then 1 else 0 end as score_flag_cdl_apr23_res,
 
@@ -133,61 +87,28 @@ view: expoclm_quarters_cdl {
     FROM expoclm_quarters_cdl a
 
 
- left join
-            (select
-               *,
-               row_number() over(partition by quote_id) as dup
-             from aapricing.uncalibrated_scores_nmdec19_new
-            ) dec19nm
-            on a.quote_id = dec19nm.quote_id and dec19nm.dup = 1
-
 left join
             (select
                *,
                row_number() over(partition by quote_id) as dup
-             from aapricing.uncalibrated_scores_mdec19_new
-            ) dec19m
-            on a.quote_id = dec19m.quote_id and dec19m.dup = 1
-
-left join
-            (select
-               *,
-               row_number() over(partition by quote_id) as dup
-             from aapricing.uncalibrated_scores_initial_cdl_models
-            ) cdl_models
-            on a.quote_id = cdl_models.quote_id and cdl_models.dup = 1
-
-
-left join
-            (select
-               *,
-               row_number() over(partition by quote_id) as dup
-             from aapricing.initial_cdl_residual_scores
-            ) cdl_residuals
-            on a.quote_id = cdl_residuals.quote_id and cdl_residuals.dup = 1
-
-
-left join
-            (select
-               *,
-               row_number() over(partition by quote_id) as dup
-             from aapricing.uncalibrated_scores_cdl_apr23
+             from uncalibrated_scores_cdl_apr23
             ) cdl_apr23
-            on a.quote_id = cdl_apr23.quote_id and cdl_apr23.dup = 1
+            on uuid_to_char(a.quote_id) = cdl_apr23.quote_id and cdl_apr23.dup = 1
 
 
 left join
             (select
                *,
                row_number() over(partition by quote_id) as dup
-             from aapricing.cdl_apr23_residual_scores
+             from cdl_apr23_residual_scores
             ) cdl_apr23_res
-            on a.quote_id = cdl_apr23_res.quote_id and cdl_apr23_res.dup = 1
+            on uuid_to_char(a.quote_id) = cdl_apr23_res.quote_id and cdl_apr23_res.dup = 1
 
 
     LEFT JOIN
           pattern_to_ultimate p
           ON (months_between (trunc (SYSDATE,'quarter'),trunc (a.exposure_start,'quarter')) / 3)-1 = p.dev_quarter
+
 
     WHERE date_trunc('quarter',a.exposure_start) < date_trunc('quarter',to_date(sysdate))
 
@@ -477,365 +398,6 @@ left join
     sql: sum(eprem)/nullif(sum(evy),0);;
     value_format: "#,##0"
   }
-
-
-
-
-
-
-
-
-  measure: ad_freq_pred_dec19nm {
-    type: number
-    sql: sum(case when score_flag_dec19nm = 1 then predicted_ad_freq_dec19nm else 0 end)/sum(case when score_flag_dec19nm = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-
-  measure: ad_sev_pred_dec19nm {
-    type: number
-    sql: sum(case when score_flag_dec19nm = 1 then predicted_ad_sev_dec19nm else 0 end)/sum(case when score_flag_dec19nm = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-  measure: ad_bc_pred_dec19nm {
-    type: number
-    sql: ${ad_freq_pred_dec19nm}*${ad_sev_pred_dec19nm};;
-    value_format: "#,##0"
-  }
-
-
-  measure: tp_freq_pred_dec19nm {
-    type: number
-    sql: sum(case when score_flag_dec19nm = 1 then predicted_tp_freq_dec19nm else 0 end)/sum(case when score_flag_dec19nm = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-  measure: tp_sev_pred_dec19nm {
-    type: number
-    sql: sum(case when score_flag_dec19nm = 1 then predicted_tp_sev_dec19nm else 0 end)/sum(case when score_flag_dec19nm = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-  measure: tp_bc_pred_dec19nm {
-    type: number
-    sql: ${tp_freq_pred_dec19nm}*${tp_sev_pred_dec19nm};;
-    value_format: "#,##0"
-  }
-
-
-
-  measure: pi_freq_pred_dec19nm {
-    type: number
-    sql: sum(case when score_flag_dec19nm = 1 then predicted_pi_freq_dec19nm else 0 end)/sum(case when score_flag_dec19nm = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-  measure: pi_sev_pred_dec19nm {
-    type: number
-    sql: sum(case when score_flag_dec19nm = 1 then predicted_pi_sev_dec19nm else 0 end)/sum(case when score_flag_dec19nm = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-  measure: pi_bc_pred_dec19nm {
-    type: number
-    sql: ${pi_freq_pred_dec19nm}*${pi_sev_pred_dec19nm};;
-    value_format: "#,##0"
-  }
-
-  measure: ot_freq_pred_dec19nm {
-    type: number
-    sql: sum(case when score_flag_dec19nm = 1 then predicted_ot_freq_dec19nm else 0 end)/sum(case when score_flag_dec19nm = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-  measure: ot_sev_pred_dec19nm {
-    type: number
-    sql: sum(case when score_flag_dec19nm = 1 then predicted_ot_sev_dec19nm else 0 end)/sum(case when score_flag_dec19nm = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-  measure: ot_bc_pred_dec19nm {
-    type: number
-    sql: ${ot_freq_pred_dec19nm}*${ot_sev_pred_dec19nm};;
-    value_format: "#,##0"
-  }
-
-  measure: ws_freq_pred_dec19nm {
-    type: number
-    sql: sum(case when score_flag_dec19nm = 1 then predicted_ws_freq_dec19nm else 0 end)/sum(case when score_flag_dec19nm = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-  measure: ws_sev_pred_dec19nm {
-    type: number
-    sql: sum(case when score_flag_dec19nm = 1 then predicted_ws_sev_dec19nm else 0 end)/sum(case when score_flag_dec19nm = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-  measure: ws_bc_pred_dec19nm {
-    type: number
-    sql: ${ws_freq_pred_dec19nm}*${ws_sev_pred_dec19nm};;
-    value_format: "#,##0"
-  }
-
-  measure: total_bc_pred_dec19nm {
-    type: number
-    sql: ${ad_bc_pred_dec19nm}+${tp_bc_pred_dec19nm}+${ot_bc_pred_dec19nm}+${pi_bc_pred_dec19nm}+${ws_bc_pred_dec19nm};;
-    value_format: "#,##0"
-  }
-
-  measure: total_lr_pred_dec19nm {
-    type: number
-    sql: (${ad_bc_pred_dec19nm}+${tp_bc_pred_dec19nm}+${ot_bc_pred_dec19nm}+${pi_bc_pred_dec19nm}+${ws_bc_pred_dec19nm})/${average_earned_prem};;
-    value_format: "0%"
-  }
-
-
-
-
-
-
-
-
-  measure: ad_freq_pred_dec19m {
-    type: number
-    sql: sum(case when score_flag_dec19m = 1 then predicted_ad_freq_dec19m else 0 end)/sum(case when score_flag_dec19m = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-
-  measure: ad_sev_pred_dec19m {
-    type: number
-    sql: sum(case when score_flag_dec19m = 1 then predicted_ad_sev_dec19m else 0 end)/sum(case when score_flag_dec19m = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-  measure: ad_bc_pred_dec19m {
-    type: number
-    sql: ${ad_freq_pred_dec19m}*${ad_sev_pred_dec19m};;
-    value_format: "#,##0"
-  }
-
-
-  measure: tp_freq_pred_dec19m {
-    type: number
-    sql: sum(case when score_flag_dec19m = 1 then predicted_tp_freq_dec19m else 0 end)/sum(case when score_flag_dec19m = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-  measure: tp_sev_pred_dec19m {
-    type: number
-    sql: sum(case when score_flag_dec19m = 1 then predicted_tp_sev_dec19m else 0 end)/sum(case when score_flag_dec19m = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-  measure: tp_bc_pred_dec19m {
-    type: number
-    sql: ${tp_freq_pred_dec19m}*${tp_sev_pred_dec19m};;
-    value_format: "#,##0"
-  }
-
-
-
-  measure: pi_freq_pred_dec19m {
-    type: number
-    sql: sum(case when score_flag_dec19m = 1 then predicted_pi_freq_dec19m else 0 end)/sum(case when score_flag_dec19m = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-  measure: pi_sev_pred_dec19m {
-    type: number
-    sql: sum(case when score_flag_dec19m = 1 then predicted_pi_sev_dec19m else 0 end)/sum(case when score_flag_dec19m = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-  measure: pi_bc_pred_dec19m {
-    type: number
-    sql: ${pi_freq_pred_dec19m}*${pi_sev_pred_dec19m};;
-    value_format: "#,##0"
-  }
-
-  measure: ot_freq_pred_dec19m {
-    type: number
-    sql: sum(case when score_flag_dec19m = 1 then predicted_ot_freq_dec19m else 0 end)/sum(case when score_flag_dec19m = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-  measure: ot_sev_pred_dec19m {
-    type: number
-    sql: sum(case when score_flag_dec19m = 1 then predicted_ot_sev_dec19m else 0 end)/sum(case when score_flag_dec19m = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-  measure: ot_bc_pred_dec19m {
-    type: number
-    sql: ${ot_freq_pred_dec19m}*${ot_sev_pred_dec19m};;
-    value_format: "#,##0"
-  }
-
-  measure: ws_freq_pred_dec19m {
-    type: number
-    sql: sum(case when score_flag_dec19m = 1 then predicted_ws_freq_dec19m else 0 end)/sum(case when score_flag_dec19m = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-  measure: ws_sev_pred_dec19m {
-    type: number
-    sql: sum(case when score_flag_dec19m = 1 then predicted_ws_sev_dec19m else 0 end)/sum(case when score_flag_dec19m = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-  measure: ws_bc_pred_dec19m {
-    type: number
-    sql: ${ws_freq_pred_dec19m}*${ws_sev_pred_dec19m};;
-    value_format: "#,##0"
-  }
-
-  measure: total_bc_pred_dec19m {
-    type: number
-    sql: ${ad_bc_pred_dec19m}+${tp_bc_pred_dec19m}+${ot_bc_pred_dec19m}+${pi_bc_pred_dec19m}+${ws_bc_pred_dec19m};;
-    value_format: "#,##0"
-  }
-
-  measure: total_lr_pred_dec19m {
-    type: number
-    sql: (${ad_bc_pred_dec19m}+${tp_bc_pred_dec19m}+${ot_bc_pred_dec19m}+${pi_bc_pred_dec19m}+${ws_bc_pred_dec19m})/${average_earned_prem};;
-    value_format: "0%"
-  }
-
-
-
-
-
-
-
-
-
-
-  measure: ad_freq_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_ad_freq_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-
-  measure: ad_sev_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_ad_sev_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-
-  measure: ad_bc_pred_cdl_models_adj {
-    type: number
-    sql: ${ad_freq_pred_cdl_models_adj}*${ad_sev_pred_cdl_models_adj};;
-    value_format: "#,##0"
-  }
-
-
-
-
-  measure: tpo_freq_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_tpo_freq_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-
-  measure: tpo_sev_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_tpo_sev_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-
-  measure: tpo_bc_pred_cdl_models_adj {
-    type: number
-    sql: ${tpo_freq_pred_cdl_models_adj}*${tpo_sev_pred_cdl_models_adj};;
-    value_format: "#,##0"
-  }
-
-
-
-
-  measure: tpc_freq_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_tpc_freq_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-
-  measure: tpc_sev_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_tpc_sev_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-
-  measure: tpc_bc_pred_cdl_models_adj {
-    type: number
-    sql: ${tpc_freq_pred_cdl_models_adj}*${tpc_sev_pred_cdl_models_adj};;
-    value_format: "#,##0"
-  }
-
-
-
-  measure: pi_freq_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_pi_freq_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-
-  measure: pi_sev_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_pi_sev_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-
-  measure: pi_bc_pred_cdl_models_adj {
-    type: number
-    sql: ${pi_freq_pred_cdl_models_adj}*${pi_sev_pred_cdl_models_adj};;
-    value_format: "#,##0"
-  }
-
-
-
-  measure: ot_freq_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_ot_freq_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-
-  measure: ot_sev_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_ot_sev_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-
-  measure: ot_bc_pred_cdl_models_adj {
-    type: number
-    sql: ${ot_freq_pred_cdl_models_adj}*${ot_sev_pred_cdl_models_adj};;
-    value_format: "#,##0"
-  }
-
-
-
-  measure: ws_freq_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_ws_freq_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-
-  measure: ws_sev_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_ws_sev_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-
-  measure: ws_bc_pred_cdl_models_adj {
-    type: number
-    sql: ${ws_freq_pred_cdl_models_adj}*${ws_sev_pred_cdl_models_adj};;
-    value_format: "#,##0"
-  }
-
-
-
-  measure: lpi_freq_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_lpi_freq_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "0.00%"
-  }
-
-  measure: lpi_sev_pred_cdl_models_adj {
-    type: number
-    sql: sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then predicted_lpi_sev_initialcdlmodels_adj else 0 end)/sum(case when score_flag_cdl_models = 1 AND score_flag_cdl_residuals = 1 then evy else 0 end) ;;
-    value_format: "#,##0"
-  }
-
-  measure: lpi_bc_pred_cdl_models_adj {
-    type: number
-    sql: ${lpi_freq_pred_cdl_models_adj}*${lpi_sev_pred_cdl_models_adj};;
-    value_format: "#,##0"
-  }
-
-
-
-
 
 
 
