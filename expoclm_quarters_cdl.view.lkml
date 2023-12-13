@@ -73,7 +73,7 @@ view: expoclm_quarters_cdl {
     predicted_ws_freq_cdl_apr23 * (CASE WHEN cdl_apr23_res.residual_flag = 'Y' THEN predicted_ws_freq_res_cdl_apr23 ELSE 1 end) *evy *0.940    as predicted_ws_freq_cdl_apr23,
     predicted_ws_sev_cdl_apr23 * evy *1.409    as predicted_ws_sev_cdl_apr23,
     predicted_lpi_freq_cdl_apr23 * evy *1.90  as predicted_lpi_freq_cdl_apr23,
-    102768 * evy as predicted_lpi_sev_cdl_apr23,
+    140192.4 * evy *0.733 as predicted_lpi_sev_cdl_apr23,
 
 
     case when a.quote_id = cdl_apr23.quote_id then 1 else 0 end as score_flag_cdl_apr23,
