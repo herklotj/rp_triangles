@@ -730,6 +730,10 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     type: sum
     sql: ot_count;;
   }
+  measure: ws_count {
+    type: sum
+    sql: ws_count;;
+  }
 
   measure: tp_std_res_count {
     type: sum
