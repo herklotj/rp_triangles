@@ -709,6 +709,11 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql: tp_count;;
   }
 
+  measure: ot_count {
+    type: sum
+    sql: ot_count;;
+  }
+
   measure: tp_std_res_count {
     type: sum
     sql:  TP_Std_Reserve;;
