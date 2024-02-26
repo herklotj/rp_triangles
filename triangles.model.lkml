@@ -13,6 +13,7 @@ persist_with: claims_development_datagroup
 explore: claims_development {}
 explore: expoclm_quarters {}
 explore: ice_claims_development {}
+explore: ice_claims_dev_excl_luton {}
 explore: ad_hod_tri {}
 explore: reserving {}
 explore: reserving_uwyr_allocation {}

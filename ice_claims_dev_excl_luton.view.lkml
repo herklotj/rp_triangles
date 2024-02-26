@@ -1,4 +1,4 @@
-view: ice_claims_development {
+view: ice_claims_dev_excl_luton {
   derived_table: {
     sql:
     SELECT a.polnum,
@@ -234,7 +234,8 @@ FROM (SELECT *,
               AND prem.acc_month = clm.acc_month
               AND clm.policyinception = prem.inception
               AND clm.dev_period = prem.dev_period /* and  clm.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)))*/ /*and prem.inception <= clm.incidentdate and (prem.inception+364) >= clm.incidentdate and prem.acc_month=clm.acc_month and exposure >0 and clm.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)*/
-      WHERE prem.acc_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)) a
+      WHERE clm.claimnum not in ('AAG336532','AAG336596','AAG336648','AAG336656','AAG336809','AAG336820','AG336958','AAG336978','AAG337001',
+'AAG337011','AAG337093','AAG337137','AAN336466','AAN336529','AAN336633','AAN336788','AAN337055','AAN338669') and prem.acc_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)) a
   LEFT JOIN (SELECT claim_number,
                     COUNT(claim_number) AS no_claimants,
                     SUM(CASE WHEN tpinterventionrequired = 'Yes' THEN 1 ELSE 0 END) AS tpinterventionrequired,
@@ -259,7 +260,8 @@ FROM (SELECT *,
                             WHEN repairsrequired = 'Yes' THEN 'Repairs'
                             ELSE 'Unknown'
                           END AS type_of_int
-                   FROM ice_aa_tp_intervention) a
+                   FROM ice_aa_tp_intervention
+                  ) a
              GROUP BY claim_number) x ON a.claimnum = x.claim_number
   LEFT JOIN v_ice_policy_origin po ON a.polnum = po.policy_reference_number
 WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
@@ -724,11 +726,6 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: tp_count {
     type: sum
     sql: tp_count;;
-  }
-
-  measure: ot_count {
-    type: sum
-    sql: ot_count;;
   }
 
   measure: tp_std_res_count {
