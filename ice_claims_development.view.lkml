@@ -435,6 +435,12 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql:  sum(tp_incurred) ;;
   }
 
+  measure: tp_chire_incurred {
+    type: number
+    sql:  sum(tp_chire_incurred) ;;
+  }
+
+
   measure: pi_incurred {
     type: number
     sql:  sum(pi_incurred+large_pi_incurred) ;;
@@ -724,6 +730,11 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   measure: tp_count {
     type: sum
     sql: tp_count;;
+  }
+
+  measure: tp_chire_count {
+    type: sum
+    sql: tp_chire_count;;
   }
 
   measure: ot_count {
