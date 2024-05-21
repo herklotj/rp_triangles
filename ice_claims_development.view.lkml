@@ -9,6 +9,7 @@ view: ice_claims_development {
        uw_year,
        uw_qtr,
        financial_uw_year,
+      year(f_uw_start) as f_uw_year,
        to_timestamp(acc_month) AS acc_month,
        to_timestamp(acc_year) as acc_year,
        acc_qtr,
@@ -285,6 +286,11 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   dimension: financial_uw_year {
     type: string
     sql: ${TABLE}.financial_uw_year ;;
+  }
+
+  dimension: f_uw_year {
+    type: string
+    sql: ${TABLE}.f_uw_year ;;
   }
 
   dimension_group: accident_month {
