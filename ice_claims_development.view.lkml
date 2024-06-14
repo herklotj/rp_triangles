@@ -983,6 +983,17 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql: sum(ad_incurred)/ ${exposure_cumulative} ;;
   }
 
+  measure: ad_settled_incurred {
+    type: number
+    sql: sum(case when AD_Settled_Indicator =1 then ad_incurred else 0 end)  ;;
+  }
+
+  measure: ad_settled_count {
+    type: number
+    sql: sum(case when AD_Settled_Indicator =1 then ad_count else 0 end) ;;
+  }
+
+
   measure: ad_settled_sev {
     type: number
     sql: sum(case when AD_Settled_Indicator =1 then ad_incurred else 0 end) / sum(case when AD_Settled_Indicator =1 then ad_count else 0.0000000000000001 end) ;;
@@ -1003,10 +1014,25 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     sql: case when sum(tp_exc_ch_count) = 0 then 0 else sum(tp_exc_ch_incurred)/ sum(tp_exc_ch_count) end ;;
   }
 
+
+  measure: tp_settled_incurred {
+    type: number
+    sql: sum(case when tp_settled_indicator =1 then tp_incurred else 0 end)  ;;
+  }
+
+
+  measure: tp_settled_count {
+    type: number
+    sql: sum(case when tp_settled_indicator =1 then tp_count else 0 end) ;;
+  }
+
+
   measure: tp_settled_sev {
     type: number
     sql: sum(case when tp_settled_indicator =1 then tp_incurred else 0 end) / sum(case when tp_settled_indicator =1 then tp_count else 0.0000000000000001 end) ;;
   }
+
+
 
   measure: tp_chire_settled_sev {
     type: number
@@ -1032,6 +1058,21 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     type: number
     sql: case when sum(pi_count) = 0 then 0 else sum(pi_incurred)/ sum(pi_count) end;;
   }
+
+
+
+  measure: pi_settled_incurred {
+    type: number
+    sql: sum(case when pi_settled_indicator =1 then pi_incurred else 0 end)  ;;
+  }
+
+
+
+  measure: pi_settled_count {
+    type: number
+    sql:  sum(case when pi_settled_indicator =1 then pi_count else 0 end) ;;
+  }
+
 
   measure: pi_settled_sev {
     type: number
