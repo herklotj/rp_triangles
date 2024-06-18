@@ -10,6 +10,7 @@ view: ice_claims_development {
        uw_qtr,
        financial_uw_year,
       year(f_uw_start) as f_uw_year,
+      year(f_uw_start) as uw_year_needed,
        to_timestamp(acc_month) AS acc_month,
        to_timestamp(acc_year) as acc_year,
        acc_qtr,
@@ -197,6 +198,7 @@ FROM (SELECT *,
                    eprem.acc_month,
                    d.start_date AS uw_year,
                    f.fy AS financial_uw_year,
+                   e.start_date AS uw_start,
                    f.start_date AS f_uw_start,
                    timestampadd(MONTH,-1,c.fy_start_date) AS acc_year,
                    c.fy_quarter_start_date AS acc_qtr,
@@ -302,6 +304,11 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   dimension: f_uw_year {
     type: string
     sql: ${TABLE}.f_uw_year ;;
+  }
+
+  dimension: uw_year_needed {
+    type: string
+    sql: ${TABLE}.uw_year_needed ;;
   }
 
   dimension_group: accident_month {
