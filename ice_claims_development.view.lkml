@@ -460,7 +460,7 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
 
   measure: pi_incurred {
     type: number
-    sql:  sum(pi_incurred+large_pi_incurred) ;;
+    sql:  sum(pi_incurred) ;;
   }
 
   measure: pi_incurred_cap1m {
