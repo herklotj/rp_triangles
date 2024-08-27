@@ -1,7 +1,7 @@
 view: ice_claims_development {
   derived_table: {
     sql:
-    SELECT a.polnum,
+      SELECT a.polnum,
        scheme,
        a.renewseq,
        inception,
@@ -41,6 +41,7 @@ view: ice_claims_development {
        months_between(dev_month +day(uw_year) -1,uw_year) AS dev_period_uw_year,
        months_between(dev_month,uw_qtr) AS dev_period_uw_qtr,
        months_between(dev_month,f_uw_start) AS dev_period_fuw_year,
+
        total_reported_count_exc_ws AS total_reported_count_exc_ws,
        total_reported_count AS total_reported_count,
        total_count_exc_ws AS total_count_exc_ws,
@@ -205,6 +206,7 @@ FROM (SELECT *,
                    e.fy_quarter_start_date AS uw_qtr,
                    b.start_date AS dev_month,
                    months_between(b.start_date,eprem.acc_month) AS dev_period,
+
                    CASE
                      WHEN months_between (b.start_date,eprem.acc_month) = 0 THEN earned_premium
                      ELSE 0
@@ -224,7 +226,7 @@ FROM (SELECT *,
                          SUM(earned_premium) AS earned_premium,
                          SUM(exposure) AS exposure,
                          MAX(inforce) AS inforce
-                  FROM ice_prem_earned
+                  FROM v_ice_prem_earned_tiara
                   GROUP BY polnum,
                            scheme,
                            renewseq,
@@ -243,7 +245,7 @@ FROM (SELECT *,
                      ON eprem.inception >= f.start_date
                     AND eprem.inception <= f.end_date
                     AND f.scheme = eprem.scheme) prem
-        LEFT JOIN ice_claims_cumulative clm
+        LEFT JOIN v_ice_claims_cumulative clm
                ON prem.polnum = clm.polnum
               AND prem.acc_month = clm.acc_month
               AND clm.policyinception = prem.inception
@@ -273,7 +275,7 @@ FROM (SELECT *,
                             WHEN repairsrequired = 'Yes' THEN 'Repairs'
                             ELSE 'Unknown'
                           END AS type_of_int
-                   FROM ice_aa_tp_intervention) a
+                   FROM dbuser.ice_aa_tp_intervention) a
              GROUP BY claim_number) x ON a.claimnum = x.claim_number
   LEFT JOIN v_ice_policy_origin po ON a.polnum = po.policy_reference_number
 WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
