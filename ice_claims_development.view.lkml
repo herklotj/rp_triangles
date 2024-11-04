@@ -1,7 +1,7 @@
 view: ice_claims_development {
   derived_table: {
     sql:
-      SELECT a.polnum,
+    SELECT a.polnum,
        scheme,
        a.renewseq,
        inception,
@@ -9,7 +9,7 @@ view: ice_claims_development {
        uw_year,
        uw_qtr,
        financial_uw_year,
-      year(f_uw_start) as f_uw_year,
+      year(inception) as f_uw_year,
       year(f_uw_start) as uw_year_needed,
        to_timestamp(acc_month) AS acc_month,
        to_timestamp(acc_year) as acc_year,
@@ -40,7 +40,7 @@ view: ice_claims_development {
        months_between(dev_month,acc_qtr) AS dev_period_acc_qtr,
        months_between(dev_month +day(uw_year) -1,uw_year) AS dev_period_uw_year,
        months_between(dev_month,uw_qtr) AS dev_period_uw_qtr,
-       months_between(dev_month,f_uw_start) AS dev_period_fuw_year,
+       months_between(dev_month,DATE_TRUNC('year', inception)) AS dev_period_fuw_year,
 
        total_reported_count_exc_ws AS total_reported_count_exc_ws,
        total_reported_count AS total_reported_count,
@@ -226,7 +226,7 @@ FROM (SELECT *,
                          SUM(earned_premium) AS earned_premium,
                          SUM(exposure) AS exposure,
                          MAX(inforce) AS inforce
-                  FROM v_ice_prem_earned_tiara
+                  FROM ice_prem_earned_tiara
                   GROUP BY polnum,
                            scheme,
                            renewseq,
@@ -245,7 +245,7 @@ FROM (SELECT *,
                      ON eprem.inception >= f.start_date
                     AND eprem.inception <= f.end_date
                     AND f.scheme = eprem.scheme) prem
-        LEFT JOIN v_ice_claims_cumulative clm
+        LEFT JOIN ice_claims_cumulative clm
                ON prem.polnum = clm.polnum
               AND prem.acc_month = clm.acc_month
               AND clm.policyinception = prem.inception
