@@ -16,7 +16,7 @@ view: reserving_uwyr_allocation {
               ,sum(earned_premium) as earned_premium
               ,sum(exposure) as exposure
            from
-              ice_prem_earned pr
+              dbuser.ice_prem_earned pr
            LEFT JOIN
               aapricing.uw_years d
               ON pr.inception >= d.start_date

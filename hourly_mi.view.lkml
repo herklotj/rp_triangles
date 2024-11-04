@@ -17,10 +17,10 @@ view: hourly_mi {
           s.sale_timestamp,
           m.rct_mi_13 as scheme_number,
           case when max(cast(substr(c.rct_modelnumber,23,3),int)) over() = cast(substr(c.rct_modelnumber,23,3),int) then 1 else 0 end as is_most_recent_model
-        FROM qs_cover c
+        FROM dbuser.qs_cover c
         LEFT JOIN hourly_sales s
           on lower(c.quote_id) = lower(s.insurer_quote_ref)
-        LEFT JOIN qs_mi_outputs m
+        LEFT JOIN dbuser.qs_mi_outputs m
           on c.quote_id = m.quote_id
         WHERE c.quote_dttm < sysdate and months_between(to_date(sysdate),c.quote_dttm) <= 3
           and c.motor_transaction_type = 'NewBusiness' and c.business_purpose = ''

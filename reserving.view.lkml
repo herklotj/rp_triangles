@@ -14,7 +14,7 @@ view: reserving {
           ,sum(earned_premium) as earned_premium
           ,sum(exposure) as exposure
        from
-          ice_prem_earned pr
+          dbuser.ice_prem_earned pr
        group by acc_month
        ) eprem
         on eprem.acc_month = ultimates.acc_month

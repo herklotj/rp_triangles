@@ -96,7 +96,7 @@ FROM (SELECT *,
                      WHEN months_between (b.start_date,eprem.acc_month) = 0 THEN exposure
                      ELSE 0
                    END AS exposure
-            FROM ice_prem_earned eprem
+            FROM dbuser.ice_prem_earned eprem
               JOIN aauser.calendar b
                 ON eprem.acc_month <= b.start_date
                AND to_date (SYSDATE-DAY (SYSDATE) + 1) >= b.start_date
@@ -113,7 +113,7 @@ FROM (SELECT *,
               AND clm.dev_month = prem.dev_month
         LEFT JOIN (SELECT claim_number,
                           liability_decision
-                   FROM ice_dim_claim
+                   FROM dbuser.ice_dim_claim
                    WHERE current_flag = 'Y') lib ON clm.claimnum = lib.claim_number
       WHERE prem.acc_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)) a
   LEFT JOIN v_ice_policy_origin po ON a.polnum = po.policy_reference_number
