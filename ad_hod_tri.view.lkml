@@ -96,7 +96,7 @@ FROM (SELECT *,
                      WHEN months_between (b.start_date,eprem.acc_month) = 0 THEN exposure
                      ELSE 0
                    END AS exposure
-            FROM dbuser.ice_prem_earned eprem
+            FROM ice_prem_earned_tiara eprem
               JOIN aauser.calendar b
                 ON eprem.acc_month <= b.start_date
                AND to_date (SYSDATE-DAY (SYSDATE) + 1) >= b.start_date
