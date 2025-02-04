@@ -125,15 +125,21 @@ view: ice_claims_development {
          WHEN total_incurred > 2000000 THEN 2000000
          ELSE total_incurred
        END AS total_incurred_cap_2m,
+       CASE
+         WHEN total_incurred > 3000000 THEN 3000000
+         ELSE total_incurred
+       END AS total_incurred_cap_3m,
       CASE
          WHEN year(f_uw_start)<2024 and total_incurred > 1000000 then 1000000
-         WHEN year(f_uw_start)>=2024 and total_incurred > 2000000 then 2000000
+         WHEN year(f_uw_start)=2024 and total_incurred > 2000000 then 2000000
+         WHEN year(f_uw_start)>=2025 and total_incurred > 3000000 then 3000000
          ELSE total_incurred
       END AS total_incurred_cap_1m_2m_b_a_24,
 
       CASE
          WHEN year(acc_year)<2024 and total_incurred > 1000000 then 1000000
-         WHEN year(acc_year)>=2024 and total_incurred > 2000000 then 2000000
+         WHEN year(acc_year)=2024 and total_incurred > 2000000 then 2000000
+         WHEN year(acc_year)>=2025 and total_incurred > 3000000 then 3000000
          ELSE total_incurred
       END AS total_incurred_cap_1m_2m_b_a_24_acc,
        /*CASE
