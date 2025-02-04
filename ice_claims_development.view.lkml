@@ -593,17 +593,23 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
     description: "Total Incurred Claims Cap 2 million"
   }
 
+  measure: total_incurred_cap_3m {
+    type: sum
+    sql: total_incurred_cap_3m ;;
+    description: "Total Incurred Claims Cap 3 million"
+  }
+
   measure: total_incurred_cap_1m_2m_b_a_24 {
     type: sum
     sql: total_incurred_cap_1m_2m_b_a_24 ;;
-    description: "Total Incurred Claims Cap 1 and 2 million b/a 2024"
+    description: "Total Incurred Claims Cap to Relevant UW Year"
   }
 
 
   measure: total_incurred_cap_1m_2m_b_a_24_acc {
     type: sum
     sql: total_incurred_cap_1m_2m_b_a_24_acc ;;
-    description: "Total Incurred Claims Cap 1 and 2 million b/a 2024 Acc"
+    description: "Total Incurred Claims Cap to Relevant Acc Year"
   }
   measure: earned_premium {
     type: sum
