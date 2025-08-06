@@ -186,15 +186,15 @@ view: ice_claims_development {
          WHEN ws_count = 0 AND (notificationdate -day(notificationdate) +1) <= dev_month THEN 1
          ELSE 0
        END AS all_notifications_exc_ws,
-       no_claimants,
-       tpinterventionrequired,
-       no_sucessful_int,
-       no_unsuccessful_int,
-       no_none_tpi,
-       no_non_contactable,
-       no_both,
-       no_chire,
-       no_repairs
+       '' as no_claimants,
+       '' as tpinterventionrequired,
+       '' as no_sucessful_int,
+       '' as no_unsuccessful_int,
+       '' as no_none_tpi,
+       '' as no_non_contactable,
+       '' as no_both,
+       '' as no_chire,
+       '' as no_repairs
 FROM (SELECT *,
              '2999-01-01' AS settleddate
       FROM (SELECT eprem.polnum,
@@ -238,53 +238,27 @@ FROM (SELECT *,
                            renewseq,
                            inception,
                            acc_month) eprem
-              JOIN aauser.calendar b
+              INNER JOIN aauser.calendar b
                 ON eprem.acc_month <= b.start_date
                AND to_date (SYSDATE-DAY (SYSDATE) + 1) >= b.start_date
               LEFT JOIN aauser.calendar c ON eprem.acc_month = c.start_date
               LEFT JOIN aapricing.uw_years d
-                     ON eprem.inception >= d.start_date
-                    AND eprem.inception <= d.end_date
+                     ON eprem.inception between d.start_date and d.end_date
                     AND d.scheme = eprem.scheme
               LEFT JOIN aauser.calendar e ON eprem.uw_month = e.start_date
               LEFT JOIN aapricing.financial_years f
-                     ON eprem.inception >= f.start_date
-                    AND eprem.inception <= f.end_date
+                     ON eprem.inception between f.start_date and f.end_date
                     AND f.scheme = eprem.scheme) prem
-        LEFT JOIN ice_claims_cumulative clm
+        LEFT JOIN (select *
+        from ice_claims_cumulative WHERE acc_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)) clm
                ON prem.polnum = clm.polnum
               AND prem.acc_month = clm.acc_month
               AND clm.policyinception = prem.inception
-              AND clm.dev_period = prem.dev_period /* and  clm.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)))*/ /*and prem.inception <= clm.incidentdate and (prem.inception+364) >= clm.incidentdate and prem.acc_month=clm.acc_month and exposure >0 and clm.dev_month < (to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)*/
+              AND clm.dev_period = prem.dev_period
       WHERE prem.acc_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)) a
-  LEFT JOIN (SELECT claim_number,
-                    COUNT(claim_number) AS no_claimants,
-                    SUM(CASE WHEN tpinterventionrequired = 'Yes' THEN 1 ELSE 0 END) AS tpinterventionrequired,
-                    SUM(CASE WHEN tpi_status = 'Successful Intervention' THEN 1 ELSE 0 END) AS no_sucessful_int,
-                    SUM(CASE WHEN tpi_status = 'Unsuccessful Intervention' THEN 1 ELSE 0 END) AS no_unsuccessful_int,
-                    SUM(CASE WHEN tpi_status = 'No TPI' THEN 1 ELSE 0 END) AS no_none_tpi,
-                    SUM(CASE WHEN tpi_status = 'Non Contactable' THEN 1 ELSE 0 END) AS no_non_contactable,
-                    SUM(CASE WHEN type_of_int = 'Both' THEN 1 ELSE 0 END) AS no_both,
-                    SUM(CASE WHEN type_of_int = 'CHire' THEN 1 ELSE 0 END) AS no_chire,
-                    SUM(CASE WHEN type_of_int = 'Repairs' THEN 1 ELSE 0 END) AS no_repairs
-             FROM (SELECT *,
-                          CASE
-                            WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Successful' AND (hirevehiclerequired = 'Yes' OR repairsrequired = 'Yes') THEN 'Successful Intervention'
-                            WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Successful' AND (hirevehiclerequired = 'No' OR hirevehiclerequired IS NULL) AND (repairsrequired = 'No' OR repairsrequired IS NULL) THEN 'Unsuccessful Intervention'
-                            WHEN tpinterventionrequired = 'No' THEN 'No TPI'
-                            WHEN tpinterventionrequired = 'Yes' AND contactsuccess = 'Not Successful' THEN 'Non Contactable'
-                            ELSE 'Unknown'
-                          END AS tpi_status,
-                          CASE
-                            WHEN hirevehiclerequired = 'Yes' AND repairsrequired = 'Yes' THEN 'Both'
-                            WHEN hirevehiclerequired = 'Yes' THEN 'CHire'
-                            WHEN repairsrequired = 'Yes' THEN 'Repairs'
-                            ELSE 'Unknown'
-                          END AS type_of_int
-                   FROM dbuser.ice_aa_tp_intervention) a
-             GROUP BY claim_number) x ON a.claimnum = x.claim_number
   LEFT JOIN v_ice_policy_origin po ON a.polnum = po.policy_reference_number
 WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
+
          ;;
   }
 
