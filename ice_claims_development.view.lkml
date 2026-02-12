@@ -432,99 +432,104 @@ WHERE a.dev_month <(to_date(SYSDATE) -DAY(to_date(SYSDATE)) +1)
   }
 
   measure: ad_incurred {
-    type: number
-    sql:  sum(ad_incurred) ;;
+    type: sum
+    sql:  ad_incurred ;;
   }
 
   measure: tp_incurred {
-    type: number
-    sql:  sum(tp_incurred) ;;
+    type: sum
+    sql: tp_incurred ;;
   }
 
   measure: tp_chire_incurred {
-    type: number
-    sql:  sum(tp_chire_incurred) ;;
+    type: sum
+    sql: tp_chire_incurred ;;
   }
 
-
   measure: pi_incurred {
-    type: number
-    sql:  sum(pi_incurred) ;;
+    type: sum
+    sql: pi_incurred ;;
   }
 
   measure: pi_incurred_cap1m {
-    type: number
-    sql:  sum(case when (pi_incurred+large_pi_incurred) > 1000000 then 1000000 else (pi_incurred+large_pi_incurred) end) ;;
+    type: sum
+    sql: CASE WHEN (pi_incurred + large_pi_incurred) > 1000000 THEN 1000000 ELSE (pi_incurred + large_pi_incurred) END ;;
   }
 
   measure: pi_incurred_cap25k {
-    type: number
-    sql:  sum(case when (pi_incurred+large_pi_incurred) > 25000 then 25000 else (pi_incurred+large_pi_incurred) end) ;;
+    type: sum
+    sql: CASE WHEN (pi_incurred + large_pi_incurred) > 25000 THEN 25000 ELSE (pi_incurred + large_pi_incurred) END ;;
   }
 
   measure: pi_xs_incurred_cap1m {
-    type: number
-    sql:  sum(case when (pi_incurred+large_pi_incurred) > 1000000 then 975000 else (large_pi_incurred) end) ;;
+    type: sum
+    sql: CASE WHEN (pi_incurred + large_pi_incurred) > 1000000 THEN 975000 ELSE large_pi_incurred END ;;
   }
 
   measure: capped_pi_indexed_incurred {
-    type:  number
-    sql: avg(CASE WHEN capped_pi_indexed_incurred > 0 THEN capped_pi_indexed_incurred END) ;;
+    type: average
+    sql: CASE WHEN capped_pi_indexed_incurred > 0 THEN capped_pi_indexed_incurred END ;;
   }
 
-  measure:capped_pi_indexed_freq{
+# helper count used by the frequency measure
+  measure: capped_pi_indexed_count {
+    type: sum
+    sql: CASE WHEN capped_pi_indexed_incurred > 0 THEN 1 ELSE 0 END ;;
+  }
+
+  measure: capped_pi_indexed_freq {
     type: number
-    sql: sum(case when capped_pi_indexed_incurred > 0 THEN 1 ELSE 0 END)/${exposure_cumulative} ;;
+    sql: ${capped_pi_indexed_count} / ${exposure_cumulative} ;;
   }
 
   measure: capped_pi_indexed_paid {
-    type:  number
-    sql:avg(capped_pi_indexed_paid) ;;
+    type: average
+    sql: capped_pi_indexed_paid ;;
   }
 
   measure: ot_incurred {
-    type: number
-    sql:  sum(ot_incurred) ;;
+    type: sum
+    sql: ot_incurred ;;
   }
 
   measure: ws_incurred {
-    type: number
-    sql:  sum(ws_incurred) ;;
+    type: sum
+    sql: ws_incurred ;;
   }
 
   measure: ad_paid {
-    type: number
-    sql:  sum(ad_paid) ;;
+    type: sum
+    sql: ad_paid ;;
   }
 
   measure: tp_paid {
-    type: number
-    sql:  sum(tp_paid) ;;
+    type: sum
+    sql: tp_paid ;;
   }
 
   measure: pi_paid {
-    type: number
-    sql:  sum(pi_paid+large_pi_paid) ;;
+    type: sum
+    sql: pi_paid + large_pi_paid ;;
   }
 
   measure: pi_paid_cap1m {
-    type: number
-    sql:  sum(case when (pi_paid+large_pi_paid) > 1000000 then 1000000 else (pi_paid+large_pi_paid) end) ;;
+    type: sum
+    sql: CASE WHEN (pi_paid + large_pi_paid) > 1000000 THEN 1000000 ELSE (pi_paid + large_pi_paid) END ;;
   }
 
   measure: pi_paid_cap25k {
-    type: number
-    sql:  sum(case when (pi_paid+large_pi_paid) > 25000 then 25000 else (pi_paid+large_pi_paid) end) ;;
+    type: sum
+    sql: CASE WHEN (pi_paid + large_pi_paid) > 25000 THEN 25000 ELSE (pi_paid + large_pi_paid) END ;;
   }
 
   measure: ot_paid {
-    type: number
-    sql:  sum(ot_paid) ;;
+    type: sum
+    sql: ot_paid ;;
   }
 
   measure: ws_paid {
-    type: number
-    sql:  sum(ws_paid) ;;
+    type: sum
+    sql: ws_paid ;;
   }
 
   measure: recoveries_paid {
